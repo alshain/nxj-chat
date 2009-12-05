@@ -4,7 +4,7 @@ import ch.nksa.pu.g2007e.pingbot.SensorMount;
 import ch.nksa.pu.robotics.libs.BaseUnit;
 import lejos.nxt.*;
 
-public class MainProject {
+public class PingBot {
 
 	/**
 	 * @param args

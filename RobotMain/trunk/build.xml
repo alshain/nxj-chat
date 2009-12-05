@@ -8,7 +8,7 @@
   <property file="build.properties"/>
   <property name="src" location="src"/>
   <property name="build" location="build"/>
-  <property name="main.class" value="ch.nksa.pu.g2007e.pingbot.MainProject"/>
+  <property name="main.class" value="ch.nksa.pu.g2007e.pingbot.PingBot"/>
   <property name="binary" value="${build}/${main.class}.nxj" />
 	
   <!-- deletes generated files -->
