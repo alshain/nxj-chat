@@ -59,10 +59,10 @@ public class BaseUnit {
 	}
 	
 	protected void mForward(Motor m){
-		if(currentOrientation == Orientation.BACKWARD)
-			m.backward();
-		else
+		if(currentOrientation == Orientation.FORWARD)
 			m.forward();
+		else
+			m.backward();
 	}
 	
 	protected void mBackward(Motor m){
