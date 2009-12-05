@@ -3,12 +3,15 @@ package ch.nksa.pu.g2007e.pingbot;
 import lejos.nxt.*;
 
 public class SensorMount {
-	protected long lastPing = 0;
-	protected static int sonicDelay = 500; 
 	public Motor motor = Motor.A;
 	public TouchSensor touch = new TouchSensor(SensorPort.S3);
 	public LightSensor light = new LightSensor(SensorPort.S1);
 	public UltrasonicSensor uSonic = new UltrasonicSensor(SensorPort.S2);
+	
+	protected long lastPing = 0;
+	protected static int sonicDelay = 500; 
+	
+	
 	public SensorMount(){
 		motor.setPower(800);
 		resetPosition();
@@ -20,7 +23,6 @@ public class SensorMount {
 		}
 		lastPing = System.currentTimeMillis();
 		return uSonic.getDistance();
-	
 	}
 	
 	public void hiphop(){
@@ -56,9 +58,6 @@ public class SensorMount {
 		while(!found && motor.isMoving()){
 			Thread.sleep(10);
 			newIntensity = light.getLightValue();
-			
 		}
-		
 	}
-	
 }
