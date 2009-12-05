@@ -1,0 +1,4 @@
+Adjust .classpath:
+	<classpathentry kind="lib" path="C:/Program Files/leJOS NXJ/lib/classes.jar" rootpath="/"/>
+ 
+ Modify the path so it points to the correct location of classes.jar in your leJOS installation.
