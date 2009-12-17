@@ -1,28 +1,38 @@
 package ch.nksa.pu.g2007e.pingbot;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Vector;
 
-import lejos.nxt.comm.Bluetooth;
+import lejos.nxt.LCD;
+import lejos.nxt.comm.*;
 
 public class NxtCommunication {
 	//Inquire code
-	private static byte[] cod = {0,0,0,0}; // 0,0,0,0 picks up every Bluetooth device regardless of Class of Device (cod).
-	
-	static Vector devList;
+	static BTConnection btc;
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public NxtCommunication(){
+		//waiting for connection
+		LCD.drawString("waiting for connection....", 0, 0);
+		btc = Bluetooth.waitForConnection();
+		LCD.drawString("Connected", 0, 1);
+		DataInputStream dis = btc.openDataInputStream();
+		DataOutputStream dos = btc.openDataOutputStream();
+		try {
+			byte test = dis.readByte();
+			LCD.drawInt(test, 0, 2);
+		} catch (IOException e) {}
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {}
 		
-
+		
 	}
 	
-	public static boolean discoverDevices() throws Exception{
-		devList = Bluetooth.inquire(5, 10, cod);
-		return false;
-		
-	}
+	
 	
 
 }
