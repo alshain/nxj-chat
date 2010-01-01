@@ -3,8 +3,7 @@ package ch.nksa.pu.g2007e.pingbot;
 import lejos.nxt.*;
 
 public class SensorMount {
-	public Motor motor = Motor.A;
-	public TouchSensor touch = new TouchSensor(SensorPort.S3);
+	public Motor positionLight = Motor.B;
 	public LightSensor light = new LightSensor(SensorPort.S1);
 	public UltrasonicSensor uSonic = new UltrasonicSensor(SensorPort.S2);
 	
@@ -13,8 +12,7 @@ public class SensorMount {
 	
 	
 	public SensorMount(){
-		motor.setPower(800);
-		resetPosition();
+		
 	}
 	
 	public int getDistance() throws Exception{
@@ -25,39 +23,25 @@ public class SensorMount {
 		return uSonic.getDistance();
 	}
 	
-	public void hiphop(){
-		while(true){
-			motor.backward();
-			while(true && !Button.ESCAPE.isPressed()){
-		    	if(touch.isPressed()){
-		    		break;
-		    	}
-		    }
-			motor.reverseDirection();
-		}
+	public void enablePositionLight(){
+		enablePositionLight(true);
 	}
 	
-	public void resetPosition(){
-		if(touch.isPressed()) return;
+	public void enablePositionLight(boolean enable){
+		if(enable){
+			positionLight.setSpeed(900);
+			positionLight.forward();
+		}
+		else{
+			positionLight.stop();
+		}
 		
-		motor.backward();
-		while(true){
-	    	if(touch.isPressed()){
-	    		motor.stop();
-	    		break;
-	    	}
-	    }
 	}
 	
 	public void followTheLight() throws Exception{
-		resetPosition();
 		boolean found = false;
 		int newIntensity;
 		int epsilon = 2;
-		motor.forward();
-		while(!found && motor.isMoving()){
-			Thread.sleep(10);
-			newIntensity = light.getLightValue();
-		}
+		
 	}
 }

@@ -3,7 +3,7 @@ package ch.nksa.pu.robotics.libs;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import lejos.nxt.LCD;
 import lejos.nxt.comm.BTConnection;
@@ -14,8 +14,13 @@ public class Uplink {
 	protected DataInputStream dis;
 	protected DataOutputStream dos;
 	protected Thread inputThread;
-	
-
+	protected ArrayList<IncomingRequestHelper> listeners = new ArrayList<IncomingRequestHelper>();
+	protected ArrayList<byte[][]> rawIncoming = new ArrayList<byte[][]>();
+	protected ArrayList<IncomingRequest> incomingRequests = new ArrayList<IncomingRequest>();
+	/**
+	 * Holds a 2d byte array with the latest incoming request
+	 */
+	protected byte[][] latestRawRequest;
 	
 	public Uplink(boolean connect_now){
 		if(connect_now){
@@ -39,38 +44,54 @@ public class Uplink {
 		return false;
 	}
 	
+	public void registerListener(IncomingRequestHelper r){
+		this.listeners.add(r);
+	}
+	
+	
 	/**
 	 * must NOT be invoked manually!
 	 */
 	protected void getRequests(){
 		LCD.drawString("Listening...", 0, 2);
-		int request_id = 0;
-		int type_length = 0;
-		String type;
-		int content_length = 0;
-		
-		String content;
+		Thread waiting;
 		while(true){
 			try {
-				request_id = dis.readInt();
-				LCD.drawInt(request_id, 0, 3);
+				int length = 0;
 				
+				int lines = dis.readInt();
+				byte[][] incoming = new byte[lines][];
+				for(byte[] b: incoming){
+					length = dis.readInt();
+					b = new byte[length];
+					dis.readFully(b, 0, length);
+				}
+				this.latestRawRequest = incoming;
 				
+				for(final IncomingRequestHelper l: listeners){
+					waiting = l.makeActive();
+					try {
+						waiting.join();
+					} catch (InterruptedException e) {}
+					
+				}
+				/*
+				//Header
 				type_length = dis.readInt();
 				
 				byte[] type_b = new byte[type_length];
 				dis.readFully(type_b, 0, type_length);
 				type = new String(type_b);
-				LCD.drawString(type, 0, 4);
-				LCD.drawInt(dis.available(), 0, 7);
+				//LCD.drawString(type, 0, 4);
+				//LCD.drawInt(dis.available(), 0, 7);
 				content_length = dis.readInt();
-				LCD.drawInt(content_length, 0, 5);
+				//LCD.drawInt(content_length, 0, 5);
 				byte[] content_b = new byte[content_length];
 				dis.readFully(content_b, 0, content_length);
 				content = new String(content_b);
-				LCD.drawString(content, 0, 6);
-				LCD.drawInt(dis.available(), 0, 7);
-				
+				//LCD.drawString(content, 0, 6);
+				//LCD.drawInt(dis.available(), 0, 7);
+				*/
 			} catch (IOException e) {
 				LCD.drawString("Error!", 0, 5);
 				break;
