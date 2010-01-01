@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.nksa.pu.robotics.libs.pc.MasterMind;
+import ch.nksa.pu.robotics.libs.pc.OutgoingRequest;
+import ch.nksa.pu.robotics.libs.pc.RequestTest;
 
 import lejos.pc.comm.NXTComm;
 import lejos.pc.comm.NXTCommException;
@@ -22,7 +24,7 @@ public class PingBotServer {
         System.out.println("Connecting...");
         mind = new MasterMind();
         mind.addNewNxts(btAddresses);
-        connectionCount = mind.connectAll(); 
+        connectionCount = mind.connectAll();
         if(connectionCount == btAddresses.length){
         	System.out.println("Successfully connected to all " + btAddresses.length + " NXTs.");
         }
@@ -31,5 +33,6 @@ public class PingBotServer {
         }
         System.out.println("After line");
         System.out.println("Closing...");
+        
 	}
 }

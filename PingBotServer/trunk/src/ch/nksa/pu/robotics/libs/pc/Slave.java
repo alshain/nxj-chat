@@ -11,7 +11,7 @@ public class Slave {
 	protected String name;
 	protected String address;
 	protected boolean connected = false;
-	protected SlaveState state = SlaveState.UNREACHABLE;
+	//protected SlaveState state = SlaveState.UNREACHABLE; 
 	protected NXTComm nxtComm;
 	protected NXTInfo nxtInfo;
 	protected DataInputStream dis;
@@ -22,16 +22,11 @@ public class Slave {
 	protected Thread sendingThread;
 	protected Thread receivingThread;
 	
-	
-	
-	/**
-	 * request count is used to identify the sender of a query. Increase each time a request has been made.
-	 */
-	public enum SlaveState{
+	/*public enum SlaveState{
 		UNREACHABLE,
 		BUSY,
 		READY;
-	}
+	}*/
 	
 	public Slave(String a_name, String an_address){
 		name = a_name;
@@ -85,38 +80,54 @@ public class Slave {
 		return address;
 	}
 	
-	public OutgoingRequest sendRequest(String type, String content){
-		OutgoingRequest req = new OutgoingRequest(this, requestOutStack.size(), type, content);
+	public OutgoingRequest sendRequest(String subject, String content){
+		byte[][] data = new byte[1][];
+		data[0] = content.getBytes();
+		OutgoingRequest req = new OutgoingRequest(this, subject, data);
 		requestOutStack.add(req);
-		
 		return req;
-		
+	}
+	
+	public void sendRequest(OutgoingRequest req){
+		requestOutStack.add(req);
 	}
 	
 	protected void sendRequests(){
-		System.out.print("Launching Thread...");
+		System.out.print("Launching Request-Out-Thread...");
 		while(true){
-			//System.out.println(requestStack.size() + " - " + requestsSent);
 			if(requestOutStack.size() > requestsSent){
 				OutgoingRequest req = requestOutStack.get(requestsSent);
 				try {
 					/**
 					 * Request Protocol Format
 					 * 
-					 * id
-					 * type_length
-					 * type
-					 * content_length
-					 * content
+					 *id
+					 * RequestMode
+					 * ReferenceId
+					 * SenderLength
+					 * Sender
+					 * NickLength
+   					 * Nick
+					 * SubjectLength
+					 * Subject
 					 */
-					dos.writeInt(requestsSent);
-					dos.writeInt(req.getType().getBytes().length);
-					dos.write(req.getType().getBytes());
-					dos.writeInt(req.getContent().getBytes().length);
-					dos.write(req.getContent().getBytes());
+					byte[][] header;
+					header = req.getHeader();
+					byte[][] data;
+					data = req.getData();
+					dos.writeInt(header.length + data.length);
+					for(byte[] b: header){
+						dos.writeInt(b.length);
+						dos.write(b);
+					}
+					
+					for(byte[] b: data){
+						dos.writeInt(b.length);
+						dos.write(b);
+					}
+					dos.flush();
 					req.hasBeenSent = true;
 					requestsSent ++;
-					dos.flush();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -131,31 +142,40 @@ public class Slave {
 		}
 	}
 	
+	public OutgoingRequest getOutgoingRequest(int id){
+		if(requestOutStack.size() > id){
+			return requestOutStack.get(id);
+		}
+		
+		return null;
+	}
 	
+	protected void registerRequest(OutgoingRequest req){
+		req.id = requestOutStack.size();
+		requestOutStack.add(req);
+	}
 	
 	protected void receiveRequests(){
 		System.out.println("Listening to " + name + "...");
 		int request_id = 0;
-		int type_length = 0;
-		String type;
-		int content_length = 0;
+		int data_length = 0;
+		int field_count;
+		byte[][] data = new byte[4][];
 		
-		String content;
 		while(true){
 			try {
 				request_id = dis.readInt();
-				type_length = dis.readInt();
-				
-				byte[] type_b = new byte[type_length];
-				dis.readFully(type_b, 0, type_length);
-				type = new String(type_b);
-				content_length = dis.readInt();
-				byte[] content_b = new byte[content_length];
-				dis.readFully(content_b, 0, content_length);
-				content = new String(content_b);
+				field_count = dis.readInt();
+				for(int i = 0; i < field_count; i++){
+					data_length = dis.readInt();
+					data[i] = new byte[data_length];
+					dis.readFully(data[i], 0, data_length);
+				}
+				//TODO: CHECK HERE!!!
+				//IncomingRequest req = new IncomingRequest(this, request_id, data);
 				
 			} catch (IOException e) {
-				System.out.println(name + ": Error while receiving requests.");
+				System.out.println(name + ": Error while receiving request.");
 				break;
 			}
 			

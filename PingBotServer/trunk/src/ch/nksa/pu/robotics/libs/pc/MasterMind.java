@@ -6,12 +6,17 @@ import java.util.List;
 public class MasterMind {
 	public List<Slave> nxts = new ArrayList<Slave>();
 	public List<Slave> connectedNxts = new ArrayList<Slave>();
-	
+	private static MasterMind instance = null;
 	protected int connectionCount = 0;
 	
-	public MasterMind(){
-		
+	public static MasterMind getInstance(){
+		if(instance == null){
+			return instance = new MasterMind();
+		}
+		return instance;
 	}
+	
+	public MasterMind(){}
 	
 	public int connectAll(){
 		connectionCount = 0;
@@ -97,6 +102,10 @@ public class MasterMind {
 	
 	public int getTotalNxtCount(){
 		return nxts.size();
+	}
+	
+	public void sendSharedRequest(){
+		//TODO: implement sharedRequest thingy
 	}
 	
 }
