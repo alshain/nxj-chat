@@ -3,6 +3,7 @@ package ch.nksa.pu.robotics.libs;
 
 public class IncomingRequestHelper{
 	protected Thread foreignThread;
+	protected boolean last = false;
 	protected Thread knownThread;
 	protected boolean tryToParse = false;
 	public IncomingRequestHelper(){
