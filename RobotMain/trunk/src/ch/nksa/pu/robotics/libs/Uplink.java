@@ -154,11 +154,10 @@ public class Uplink {
 		System.out.println("Listening...");
 		Thread waiting;
 		boolean did_break = false;
+		int length = 0;
 		while(true){
 			try {
-				int length = 0;
 				did_break = false;
-				
 				int lines = dis.readInt();
 				byte[][] incoming = new byte[lines][];
 				for(byte[] b: incoming){

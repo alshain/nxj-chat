@@ -13,13 +13,13 @@ public class PingBot {
 	 * @param args
 	 */
 	//public static BaseUnit base = new BaseUnit();
-	//public static Uplink uplink = new Uplink(true);
+	public static Uplink uplink = new Uplink(true);
 	public static SensorMount sMount = new SensorMount();
 	
 	public static void main(String[] args) throws Exception{
 		// TODO Auto-generated method stub
 		//base.setOrientation(Orientation.BACKWARD);
 		sMount.enablePositionLight();
-		Thread.sleep(1000);
+		Thread.sleep(100000);
 	}
 }

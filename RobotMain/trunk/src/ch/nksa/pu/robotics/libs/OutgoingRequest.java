@@ -80,16 +80,16 @@ public class OutgoingRequest extends Request{
 		//Sender
 		//Nick
 		//Subject
-		byte[][] header = new byte[8][];
+		byte[][] header = new byte[6][];
 		header[0] = Util.intToBytes(id);
 		header[1] = Util.stringToBytes(mode.name());
-		header[2] = Util.intToBytes(reference.getReferenceId());
+		header[2] = Util.intToBytes(getReferenceId());
 		
 		header[3] = Util.stringToBytes(this.sender);
 
 		header[4] = Util.stringToBytes(nick);
 		
 		header[5] = Util.stringToBytes(subject);
-		return data;
+		return header;
 	}
 }
