@@ -30,7 +30,8 @@
   <target name="link" depends="compile"
         description="link the binary " >
     <!-- Link the binary and create a signature file -->
-    <java classname="js.tinyvm.TinyVM">
+	<record name="log.txt" action="start"/>   
+  	<java classname="js.tinyvm.TinyVM">
       <arg value="--bootclasspath"/>
       <arg path="${nxj.classes.jar}" />
       <arg value="--classpath"/>
@@ -47,6 +48,7 @@
   		<pathelement location="${nxj.bcel.jar}"/>
       </classpath>
     </java>
+  	<record name="log.txt" action="stop"/>
   </target>
 	
   <target name="upload" depends="link"

@@ -19,30 +19,36 @@ public class IncomingRequest extends Request {
 	public static boolean isRegistered = false;
 	public static IncomingRequestHelper helper;
 	
-	public static void registerRequest(final Uplink uplink){
+	public static void registerRequest(){
+		System.out.println("Registering Listener.");
 		if(!isRegistered){
+			System.out.println("Create helper.");
 			helper = new IncomingRequestHelper();
 			Thread listener = new Thread(){
 				public void run(){
 					if(helper.tryToParse){
 						IncomingRequest req;
-						req = validate(uplink.requestStruct);
+						req = validate(Uplink.getInstance().requestStruct);
 						if(req != null){
 							helper.last = true;
-							uplink.incomingRequests.add(req);
+							Uplink.getInstance().incomingRequests.add(req);
 						}
 						helper.tryToParse = false;
+						System.out.println("Interrupting Thread.");
 						helper.knownThread.interrupt();
 					}
 					else{
 						try {
 							Thread.sleep(100);
-						} catch (InterruptedException e) {}
+						} catch (InterruptedException e) {
+							System.out.println(">Exception: Interrupted.");
+						}
 					}
 				}
 			};
 			listener.start();
-			uplink.registerListener(helper);
+			Uplink.getInstance().registerListener(helper);
+			isRegistered = true;
 		}
 	}
 	

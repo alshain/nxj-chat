@@ -18,8 +18,9 @@ public class PingBot {
 	
 	public static void main(String[] args) throws Exception{
 		// TODO Auto-generated method stub
-		//base.setOrientation(Orientation.BACKWARD);
+		//base.setOrientat ion(Orientation.BACKWARD);
+		PingBotBasicInRequest.registerRequest();
 		sMount.enablePositionLight();
-		Thread.sleep(100000);
+		Thread.sleep(200000);
 	}
 }

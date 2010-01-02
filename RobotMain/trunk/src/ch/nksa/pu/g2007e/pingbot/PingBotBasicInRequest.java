@@ -15,8 +15,6 @@ public class PingBotBasicInRequest extends IncomingRequest {
 			System.out.println(req.subject);
 			return new PingBotBasicInRequest(req);
 		}
-		
 		return null;
-		
 	}
 }

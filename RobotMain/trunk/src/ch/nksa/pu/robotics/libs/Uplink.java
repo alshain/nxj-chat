@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Vector;
 
 import ch.nksa.pu.robotics.libs.IncomingRequest;
 
@@ -20,7 +19,8 @@ public class Uplink {
 	protected Thread receivingThread;
 	protected Thread sendingThread;
 	protected static Uplink instance;
-	protected ArrayList<IncomingRequestHelper> listeners = new ArrayList<IncomingRequestHelper>();
+	protected volatile ArrayList<IncomingRequestHelper> listeners = new ArrayList<IncomingRequestHelper>();
+	protected volatile int listenerCount = 0;
 	protected ArrayList<byte[][]> rawIncoming = new ArrayList<byte[][]>();
 	protected ArrayList<IncomingRequest> incomingRequests = new ArrayList<IncomingRequest>();
 	protected ArrayList<OutgoingRequest> outgoingRequests = new ArrayList<OutgoingRequest>();
@@ -72,13 +72,18 @@ public class Uplink {
 		return false;
 	}
 	
-	public void registerRequest(OutgoingRequest req){
+	public synchronized void registerRequest(OutgoingRequest req){
 		req.id = outgoingRequests.size();
 		outgoingRequests.add(req);
 	}
 	
 	public void registerListener(IncomingRequestHelper l){
-		this.listeners.add(l);
+		synchronized (listeners) {
+			System.out.println("Adding listener to Uplink.");
+			listeners.add(l);
+			listenerCount++;
+			System.out.println("Active listeners: " + listeners.size());	
+		}
 	}
 	
 	public OutgoingRequest getOutgoingRequest(int id){
@@ -110,11 +115,8 @@ public class Uplink {
 					 *id
 					 * RequestMode
 					 * ReferenceId
-					 * SenderLength
 					 * Sender
-					 * NickLength
    					 * Nick
-					 * SubjectLength
 					 * Subject
 					 */
 					byte[][] header;
@@ -160,10 +162,10 @@ public class Uplink {
 				did_break = false;
 				int lines = dis.readInt();
 				byte[][] incoming = new byte[lines][];
-				for(byte[] b: incoming){
+				for(int i = 0; i < lines; i++){
 					length = dis.readInt();
-					b = new byte[length];
-					dis.readFully(b, 0, length);
+					incoming[i] = new byte[length];
+					dis.readFully(incoming[i], 0, length);
 				}
 				
 				if(!IncomingRequest.headerIsValid(incoming)){
@@ -172,28 +174,36 @@ public class Uplink {
 					System.out.println(">Unexpected behaviour may follow!");
 					continue;
 				}
-				this.requestStruct = new RequestStruct(incoming);
-				
-				for(final IncomingRequestHelper l: listeners){
-					l.last = false;
-					waiting = l.makeActive();
-					try {
-						waiting.join();
-					} catch (InterruptedException e) {}
-					if(l.last){
-						did_break = true;
-						break;
-					}
-					if(!did_break){
-						BasicIncomingRequest req =  BasicIncomingRequest.validate(incoming);
-						incomingRequests.add(req);
+				synchronized (listeners) {
+					this.requestStruct = new RequestStruct(incoming);
+					System.out.println("Counter: " + listenerCount);
+					System.out.println("Passing request " + this.requestStruct.sender + " to " + listeners.size() + " Listeners.");
+					for(IncomingRequestHelper l: this.listeners){
+						System.out.println("Make active...");
+						l.last = false;
+						waiting = l.makeActive();
+						System.out.println("is Active...");
+						try {
+							System.out.println("Waiting for join...");
+							waiting.join();
+							
+						} catch (InterruptedException e) {}
+						System.out.println("Validations are over.");
+						if(l.last){
+							did_break = true;
+							break;
+						}
+						if(!did_break){
+							System.out.println("No listener has been found. Pass to BasicRequest.");
+							BasicIncomingRequest req =  BasicIncomingRequest.validate(incoming);
+							incomingRequests.add(req);
+						}
 					}
 				}
 			} catch (IOException e) {
-				LCD.drawString("Error!", 0, 5);
+				System.out.println("Bluetooth has been terminated unexpectedly.");
 				break;
 			}
-			
 		}
 	}
 }

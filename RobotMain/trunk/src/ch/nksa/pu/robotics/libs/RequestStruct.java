@@ -1,7 +1,5 @@
 package ch.nksa.pu.robotics.libs;
 
-import ch.nksa.pu.robotics.libs.Request.RequestMode;
-
 public class RequestStruct {
 	public int id;
 	public RequestMode mode;
@@ -16,7 +14,8 @@ public class RequestStruct {
 		id = Util.bytesToInt(raw_request[0]);
 		
 		String _mode = Util.bytesToString(raw_request[1]);
-		mode = RequestMode.valueOf(_mode);
+		mode = RequestMode.getFromString(_mode);
+		
 		if(mode == RequestMode.FOLLOW_UP){
 			reference = Uplink.getInstance().getOutgoingRequest(Util.bytesToInt(raw_request[2]));
 		}

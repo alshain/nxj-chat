@@ -11,13 +11,6 @@ public class Request {
 	protected byte[][] data;
 	protected Request reference = null;
 	
-	public enum RequestMode{
-		STATELESS,
-		RESPONSE,
-		FOLLOW_UP,
-		BROADCAST;
-	}
-	
 	public Request(String sender, String nick,
 			String subject, byte[][] data) {
 		this.mode = RequestMode.STATELESS;

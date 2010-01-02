@@ -82,7 +82,7 @@ public class OutgoingRequest extends Request{
 		//Subject
 		byte[][] header = new byte[6][];
 		header[0] = Util.intToBytes(id);
-		header[1] = Util.stringToBytes(mode.name());
+		header[1] = Util.stringToBytes(mode.toString());
 		header[2] = Util.intToBytes(getReferenceId());
 		
 		header[3] = Util.stringToBytes(this.sender);

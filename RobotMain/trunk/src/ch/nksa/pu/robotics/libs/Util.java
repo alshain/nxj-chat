@@ -20,7 +20,7 @@ public class Util {
 	}
 	
 	public static byte[] stringToBytes(String s){
-		return s.getBytes(s);
+		return s.getBytes("US-ASCII");
 	}
 	
 	public static String bytesToString(byte[] b){
