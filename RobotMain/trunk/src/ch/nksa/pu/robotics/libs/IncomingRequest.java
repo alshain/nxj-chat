@@ -1,9 +1,11 @@
 package ch.nksa.pu.robotics.libs;
 
-public class IncomingRequest extends Request {
-	protected RequestMode mode;
+import lejos.nxt.Sound;
+
+public class IncomingRequest extends Request{
+	protected IncomingRequest dummy;
 	
-	public IncomingRequest(int id, RequestMode mode, String sender, String nick,
+	protected IncomingRequest(int id, RequestMode mode, String sender, String nick,
 			String subject, byte[][] data) {
 		super(id, mode, sender, nick, subject, data);
 	}
@@ -26,22 +28,25 @@ public class IncomingRequest extends Request {
 			helper = new IncomingRequestHelper();
 			Thread listener = new Thread(){
 				public void run(){
-					if(helper.tryToParse){
-						IncomingRequest req;
-						req = validate(Uplink.getInstance().requestStruct);
-						if(req != null){
-							helper.last = true;
-							Uplink.getInstance().incomingRequests.add(req);
+					while(true){
+						if(helper.tryToParse){
+							System.out.println("tryToParse: True");
+							IncomingRequest req;
+							req = validate(Uplink.getInstance().requestStruct);
+							if(req != null){
+								helper.last = true;
+								Uplink.getInstance().incomingRequests.add(req);
+							}
+							helper.tryToParse = false;
+							System.out.println("Interrupting Thread.");
+							helper.knownThread.interrupt();
 						}
-						helper.tryToParse = false;
-						System.out.println("Interrupting Thread.");
-						helper.knownThread.interrupt();
-					}
-					else{
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							System.out.println(">Exception: Interrupted.");
+						else{
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								System.out.println(">Exception: Interrupted.");
+							}
 						}
 					}
 				}
@@ -52,7 +57,14 @@ public class IncomingRequest extends Request {
 		}
 	}
 	
-	static IncomingRequest validate(RequestStruct req){
+	protected static IncomingRequest validate(RequestStruct req){
+		System.out.println("!!IncomingRequest.validate.");
+		Sound.buzz();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+		}
 		return null;
 	}
 	

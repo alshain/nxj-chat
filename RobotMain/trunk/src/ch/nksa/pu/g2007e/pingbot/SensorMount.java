@@ -12,7 +12,7 @@ public class SensorMount {
 	
 	
 	public SensorMount(){
-		
+		light.setFloodlight(false);
 	}
 	
 	public int getDistance() throws Exception{
@@ -29,7 +29,7 @@ public class SensorMount {
 	
 	public void enablePositionLight(boolean enable){
 		if(enable){
-			positionLight.setSpeed(900);
+			positionLight.setPower(100);
 			positionLight.forward();
 		}
 		else{
@@ -42,6 +42,5 @@ public class SensorMount {
 		boolean found = false;
 		int newIntensity;
 		int epsilon = 2;
-		
 	}
 }

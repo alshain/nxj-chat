@@ -3,16 +3,16 @@ package ch.nksa.pu.robotics.libs;
 
 public class IncomingRequestHelper{
 	protected Thread foreignThread;
-	protected boolean last = false;
+	protected volatile boolean last = false;
+	protected volatile boolean tryToParse = false;
 	protected Thread knownThread;
-	protected boolean tryToParse = false;
 	public IncomingRequestHelper(){
 		super();
 	}
 	
+	//TODO: check whether we need this.
 	protected void assignThread(Thread t){
 		foreignThread = t;
-		foreignThread.start();
 	}
 	
 	protected Thread makeActive(){
@@ -23,7 +23,9 @@ public class IncomingRequestHelper{
 					try {
 						//foreignThread will interrupt this thread when handling is done.
 						Thread.sleep(10);
-					} catch (InterruptedException e) {}
+					} catch (InterruptedException e) {
+						return;
+					}
 				}
 			}
 		};

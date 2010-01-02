@@ -10,20 +10,25 @@ import lejos.nxt.*;
 import lejos.nxt.comm.*;
 
 public class PlayGound {
-	public static SensorMount sMount;// = new SensorMount();
-	public static NxtCommunication comm = new NxtCommunication();
+	public static SensorMount sMount = new SensorMount();
 	public static BaseUnit base = new BaseUnit();
 	
 	public static void main( String[] args) throws Exception{
 		base.setOrientation(Orientation.BACKWARD);
-		base.forward();
-		Thread.sleep(5000);
+		printLight();
 		//printBluetoothAddress();
 	}
 	
 	public static void printDistance() throws Exception{
 		while(!Button.ESCAPE.isPressed()){
 			LCD.drawString(String.valueOf(sMount.getDistance()), 0, 0);
+			LCD.refresh();
+		}
+	}
+	
+	public static void printLight() throws Exception{
+		while(!Button.ESCAPE.isPressed()){
+			LCD.drawString(String.valueOf(sMount.light.readNormalizedValue()) + "   ", 0, 0);
 			LCD.refresh();
 		}
 	}

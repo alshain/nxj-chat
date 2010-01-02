@@ -10,7 +10,7 @@ public class BasicIncomingRequest extends IncomingRequest {
 	}
 	
 	public static BasicIncomingRequest validate(byte[][] raw_request){
-		System.out.println("Basic Request received, parsing.");
+		//System.out.println("Basic Request received, parsing.");
 		if(!IncomingRequest.headerIsValid(raw_request)){
 			return null;
 		}

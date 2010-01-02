@@ -32,10 +32,34 @@ public class BaseUnit {
 		mRight.stop();
 	}
 	
+	public void stopLeft(){
+		mLeft.stop();
+	}
+	
+	public void stopRight(){
+		mRight.stop();
+	}
+	
+	public void toggleSmoothAccl(){
+		mLeft.smoothAcceleration(!mLeft._rampUp );
+		mRight.smoothAcceleration(!mRight._rampUp );
+	}
+	
+	public void setSmoothAcceleration(boolean enable){
+		mLeft.smoothAcceleration(enable);
+		mRight.smoothAcceleration(enable);
+	}
+	
 	public void setSpeed(int speed){
 		mLeft.setSpeed(speed);
 		mRight.setSpeed(speed);
+	}
 	
+	public void setSpeedPercentage(int speed){
+		int max_speed = 900;
+		float result = max_speed * speed / 100;
+		System.out.println(result);
+		setSpeed((int) result);
 	}
 	
 	public void forward(){
@@ -70,5 +94,10 @@ public class BaseUnit {
 			m.backward();
 		else
 			m.forward();
+	}
+
+	public void reverse() {
+		mLeft.reverseDirection();
+		mRight.reverseDirection();
 	}
 }

@@ -10,9 +10,20 @@ public class PingBotBasicInRequest extends IncomingRequest {
 		super(req);
 	}
 
-	public PingBotBasicInRequest validate(RequestStruct req){
+	protected static PingBotBasicInRequest validate(RequestStruct req){
+		System.out.println(req.sender);
+		try {
+			Thread.sleep(8000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+		}
 		if(req.sender == "pingbot.basic"){
 			System.out.println(req.subject);
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+			}
 			return new PingBotBasicInRequest(req);
 		}
 		return null;
