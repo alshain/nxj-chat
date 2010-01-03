@@ -3,24 +3,21 @@ package ch.nksa.pu.robotics.libs.pc;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Vector;
+import java.util.ArrayList;
+
+import ch.nksa.pu.robotics.libs.RequestOwner;
 
 import lejos.pc.comm.*;
 
-public class Slave {
+public class Slave extends RequestOwner {
 	protected String name;
 	protected String address;
 	protected boolean connected = false;
 	//protected SlaveState state = SlaveState.UNREACHABLE; 
 	protected NXTComm nxtComm;
 	protected NXTInfo nxtInfo;
-	protected DataInputStream dis;
-	protected DataOutputStream dos;
-	protected Vector<OutgoingRequest> requestOutStack = new Vector<OutgoingRequest>();
-	protected Vector<IncomingRequest> requestInStack = new Vector<IncomingRequest>();
-	protected int requestsSent = 0;
-	protected Thread sendingThread;
-	protected Thread receivingThread;
+	protected volatile ArrayList<BasicIncomingNxtRequest> incomingRequests = new ArrayList<BasicIncomingNxtRequest>();
+	protected volatile ArrayList<BasicOutgoingPcRequest> outgoingRequests = new ArrayList<BasicOutgoingPcRequest>();
 	
 	/*public enum SlaveState{
 		UNREACHABLE,
@@ -48,20 +45,7 @@ public class Slave {
 				dis = new DataInputStream(nxtComm.getInputStream());
 				dos = new DataOutputStream(nxtComm.getOutputStream());
 				
-				sendingThread = new Thread(){
-					public void run(){
-						sendRequests();
-					}
-				};
-				sendingThread.start();
-				
-				receivingThread = new Thread(){
-					public void run(){
-						receiveRequests();
-					}
-				};
-				receivingThread.start();
-				
+				initializeThreads();
 			} catch (NXTCommException e) {
 				// TODO Auto-generated catch block
 				System.out.println("Error! Could not connect to device.");
@@ -72,6 +56,17 @@ public class Slave {
 		return connected;
 	}
 	
+	public void disconnect(){
+		receivingThread.interrupt();
+		sendingThread.interrupt();
+		try {
+			nxtComm.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public String getName(){
 		return name;
 	}
@@ -80,105 +75,36 @@ public class Slave {
 		return address;
 	}
 	
-	public OutgoingRequest sendRequest(String subject, String content){
+
+	
+	public BasicOutgoingPcRequest sendGenericRequest(String sender, String nick, String subject, byte[][] data){
+		return new BasicOutgoingPcRequest(this, sender, nick, subject, data);
+	}
+	
+	public BasicOutgoingPcRequest sendGenericRequest(String sender, String nick, String subject, String content){
 		byte[][] data = new byte[1][];
 		data[0] = content.getBytes();
-		OutgoingRequest req = new OutgoingRequest(this, subject, data);
-		requestOutStack.add(req);
-		return req;
+		return new BasicOutgoingPcRequest(this, sender, nick, subject, data);
 	}
 	
-	public void sendRequest(OutgoingRequest req){
-		requestOutStack.add(req);
-	}
-	
-	protected void sendRequests(){
-		System.out.print("Launching Request-Out-Thread...");
-		while(true){
-			if(requestOutStack.size() > requestsSent){
-				OutgoingRequest req = requestOutStack.get(requestsSent);
-				try {
-					/**
-					 * Request Protocol Format
-					 * 
-					 *id
-					 * RequestMode
-					 * ReferenceId
-					 * SenderLength
-					 * Sender
-					 * NickLength
-   					 * Nick
-					 * SubjectLength
-					 * Subject
-					 */
-					byte[][] header;
-					header = req.getHeader();
-					byte[][] data;
-					data = req.getData();
-					dos.writeInt(header.length + data.length);
-					for(byte[] b: header){
-						dos.writeInt(b.length);
-						dos.write(b);
-					}
-					
-					for(byte[] b: data){
-						dos.writeInt(b.length);
-						dos.write(b);
-					}
-					dos.flush();
-					req.hasBeenSent = true;
-					requestsSent ++;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			}
-			else{
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {}
-			}
+	public BasicOutgoingPcRequest getOutgoingRequest(int id){
+		if(outgoingRequests.size() > id){
+			return outgoingRequests.get(id);
 		}
-	}
-	
-	public OutgoingRequest getOutgoingRequest(int id){
-		if(requestOutStack.size() > id){
-			return requestOutStack.get(id);
-		}
-		
 		return null;
 	}
 	
-	protected void registerRequest(OutgoingRequest req){
-		req.id = requestOutStack.size();
-		requestOutStack.add(req);
-	}
-	
-	protected void receiveRequests(){
-		System.out.println("Listening to " + name + "...");
-		int request_id = 0;
-		int data_length = 0;
-		int field_count;
-		byte[][] data = new byte[4][];
-		
-		while(true){
-			try {
-				request_id = dis.readInt();
-				field_count = dis.readInt();
-				for(int i = 0; i < field_count; i++){
-					data_length = dis.readInt();
-					data[i] = new byte[data_length];
-					dis.readFully(data[i], 0, data_length);
-				}
-				//TODO: CHECK HERE!!!
-				//IncomingRequest req = new IncomingRequest(this, request_id, data);
-				
-			} catch (IOException e) {
-				System.out.println(name + ": Error while receiving request.");
-				break;
-			}
-			
+	public BasicIncomingNxtRequest getIncomingRequest(int id){
+		if(incomingRequests.size() > id){
+			return incomingRequests.get(id);
 		}
+		return null;
+	}
+
+	public void registerListener(BasicIncomingNxtRequest l) {
+		synchronized (listeners) {
+			listeners.add(l);
+		}
+		System.out.println("Active listeners: " + listeners.size());
 	}
 }
