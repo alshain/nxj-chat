@@ -13,7 +13,7 @@ public class PingBot {
 	/**
 	 * @param args
 	 */
-	public static BaseUnit base = new BaseUnit();
+	public static BaseUnit base = BaseUnit.getInstance();
 	public static Uplink uplink = Uplink.getInstance(true);
 	public static SensorMount sMount = SensorMount.getInstance();
 	
@@ -35,7 +35,7 @@ public class PingBot {
 		int epsilon = 6;
 		int high;
 		Stopwatch timeout = new Stopwatch();
-		outer:
+		from_start:
 		while(true){
 			high = 0;
 			base.setSpeedPercentage(30);
@@ -72,12 +72,12 @@ public class PingBot {
 					else if(high - new_mean < epsilon){
 						base.reverse();
 						Thread.sleep(200);
-						break outer;
+						break from_start;
 					}
 					Thread.sleep(10);
 				}
 				if(timeout.elapsed() > time * 4){
-					continue outer;
+					continue from_start;
 				}
 			}
 		}

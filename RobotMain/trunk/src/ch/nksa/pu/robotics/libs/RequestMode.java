@@ -12,7 +12,7 @@ public class RequestMode extends EnumReplacement{
 	}
 	
 	public static RequestMode getFromString(String name){
-		return (RequestMode) EnumReplacement.getFromString(name);
+		return (RequestMode) EnumReplacement.fromString(name);
 	}
 	
 	public static final RequestMode STATELESS = new RequestMode("stateless");

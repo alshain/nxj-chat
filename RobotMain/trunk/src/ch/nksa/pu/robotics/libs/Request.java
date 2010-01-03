@@ -5,14 +5,16 @@ import ch.nksa.pu.robotics.libs.RequestStruct;
 public class Request {
 	protected int id;
 	protected RequestMode mode;
-	protected String sender;
+	protected RequestOwner owner;
+	private String sender;
 	protected String nick;
 	protected String subject;
 	protected byte[][] data;
 	protected Request reference = null;
 	
-	public Request(String sender, String nick,
+	public Request(RequestOwner owner, String sender, String nick,
 			String subject, byte[][] data) {
+		this.owner = owner;
 		this.mode = RequestMode.STATELESS;
 		this.sender = sender;
 		this.nick = nick;
@@ -20,8 +22,9 @@ public class Request {
 		this.data = data;
 	}
 	
-	public Request(RequestMode mode, String sender, String nick,
+	public Request(RequestOwner owner, RequestMode mode, String sender, String nick,
 			String subject, byte[][] data) {
+		this.owner = owner;
 		this.mode = mode;
 		this.sender = sender;
 		this.nick = nick;
@@ -29,8 +32,9 @@ public class Request {
 		this.data = data;
 	}
 	
-	public Request(int id, RequestMode mode, String sender, String nick,
+	public Request(RequestOwner owner, int id, RequestMode mode, String sender, String nick,
 			String subject, byte[][] data) {
+		this.owner = owner;
 		this.id = id;
 		this.mode = mode;
 		this.sender = sender;
@@ -39,12 +43,14 @@ public class Request {
 		this.data = data;
 	}
 	
-	public Request(RequestStruct req){
+	public Request(RequestOwner owner, RequestStruct req){
+		this.owner = owner;
 		readFromStruct(req);
 	}
 	
-	public Request(byte[][] raw_request){
+	public Request(RequestOwner owner, byte[][] raw_request){
 		RequestStruct req = new RequestStruct(raw_request);
+		this.owner = owner;
 		readFromStruct(req);
 	}
 
@@ -52,7 +58,7 @@ public class Request {
 		id = req.id;
 		mode = req.mode;
 		reference = req.reference;
-		sender = req.sender;
+		this.sender = req.sender;
 		nick = req.nick;
 		subject = req.subject;
 		data = req.data;
@@ -71,5 +77,17 @@ public class Request {
 	
 	public RequestMode getMode(){
 		return mode;
+	}
+
+	public String getSender() {
+		return sender;
+	}
+	
+	public String getSubject() {
+		return subject;
+	}
+	
+	public String getNick() {
+		return nick;
 	}
 }

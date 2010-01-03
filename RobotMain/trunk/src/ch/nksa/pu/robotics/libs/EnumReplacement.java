@@ -17,7 +17,11 @@ public class EnumReplacement {
 		return name;
 	}
 	
-	public static EnumReplacement getFromString(String name){
+	public boolean equals(EnumReplacement e){
+		return this.toString().equals(e.toString());
+	}
+	
+	public static EnumReplacement fromString(String name){
 		for(EnumReplacement e: list){
 			if(e.toString().equals(name)){
 				return e;
@@ -33,5 +37,19 @@ public class EnumReplacement {
 			}
 		}
 		return false;
+	}
+	
+	public static EnumReplacement fromDataArray(byte[] data){
+		if(data.length > 0){
+			return EnumReplacement.fromString(Util.bytesToString(data));
+		}
+		return null;
+	}
+	
+	public static EnumReplacement fromDataArray(byte[][] data){
+		if(data.length == 1){
+			return EnumReplacement.fromDataArray(data[0]);
+		}
+		return null;
 	}
 }

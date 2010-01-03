@@ -8,8 +8,12 @@ public class SensorMount {
 	public UltrasonicSensor uSonic = new UltrasonicSensor(SensorPort.S2);
 	private static SensorMount instance;
 	
+	/**
+	 * For clarification, see
+	 * http://tinyurl.com/yfhaskv
+	 */
 	protected long lastPing = 0;
-	protected static int sonicDelay = 500; 
+	protected static int sonicDelay = 40; 
 	
 	public static SensorMount getInstance(){
 		if(instance == null){
@@ -22,9 +26,11 @@ public class SensorMount {
 		light.setFloodlight(false);
 	}
 	
-	public int getDistance() throws Exception{
+	public int getDistance(){
 		if(System.currentTimeMillis() < (lastPing + sonicDelay)){
-			Thread.sleep(sonicDelay);
+			try {
+				Thread.sleep(sonicDelay);
+			} catch (InterruptedException e) {}
 		}
 		lastPing = System.currentTimeMillis();
 		return uSonic.getDistance();

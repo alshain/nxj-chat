@@ -26,4 +26,31 @@ public class Util {
 	public static String bytesToString(byte[] b){
 		return new String(b);
 	}
+	
+	public synchronized static void log(String to_log){
+		System.out.println(to_log);
+	}
+
+	public synchronized static void log(float to_log) {
+		System.out.println(to_log);
+	}
+	
+	/**
+	 * Thread-Safe output on display
+	 */
+	public synchronized static void log(int to_log) {
+		System.out.println(to_log);
+	}
+	
+	/**
+	 * Should only be used when Thread is unlikely be interrupted.
+	 * Otherwise behaviour is unpredictable
+	 * @param milliseconds
+	 */
+	public static void sleep(long milliseconds){
+		try{
+			Thread.sleep(milliseconds);
+		}
+		catch (InterruptedException e) {}
+	}
 }

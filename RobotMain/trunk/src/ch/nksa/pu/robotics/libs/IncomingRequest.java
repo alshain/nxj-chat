@@ -3,75 +3,76 @@ package ch.nksa.pu.robotics.libs;
 import lejos.nxt.Sound;
 
 public class IncomingRequest extends Request{
-	protected IncomingRequest(int id, RequestMode mode, String sender, String nick,
+	protected IncomingRequest(RequestOwner owner, int id, RequestMode mode, String sender, String nick,
 			String subject, byte[][] data) {
-		super(id, mode, sender, nick, subject, data);
+		super(owner, id, mode, sender, nick, subject, data);
 	}
 	
-	public IncomingRequest(byte[][] raw_request){
-		super(raw_request);
+	public IncomingRequest(RequestOwner owner, byte[][] raw_request){
+		super(owner, raw_request);
 	}
 	
-	public IncomingRequest(RequestStruct req){
-		super(req);
+	public IncomingRequest(RequestOwner owner, RequestMode mode, String sender, String nick,
+			String subject, byte[][] data) {
+		super(owner, mode, sender, nick, subject, data);
 	}
 	
-	protected IncomingRequest(){
-		super(-1, RequestMode.STATELESS, "", "", "", new byte[0][0]);
+	public IncomingRequest(RequestOwner owner, RequestStruct req){
+		super(owner, req);
+	}
+	
+	protected IncomingRequest(RequestOwner owner){
+		super(owner, -1, RequestMode.STATELESS, "", "", "", new byte[0][0]);
 	}
 
-	public static IncomingRequestHelper helper;
-	
 	public static void registerRequest(IncomingRequest dummy){
-		System.out.println("Registering Listener.");
-		Uplink.getInstance().registerListener(dummy);
+		Util.log("Registering Listener.");
+		dummy.owner.registerListener(dummy);
 	}
 	
 	protected IncomingRequest validate(RequestStruct req){
-		System.out.println("!IncomingRequest.validate.");
+		Util.log("!IncomingRequest.validate.");
 		Sound.buzz();
 		return null;
 	}
 	
 	protected static boolean headerIsValid(byte[][] raw_request){
 		if(raw_request.length < 6){
-			System.out.println("Request shorter than 6 fields.");
+			Util.log("Request shorter than 6 fields.");
 			return false;
 		}
 		if(raw_request[0].length != 4){
-			System.out.println("Malformed id.");
+			Util.log("Malformed id.");
 			return false;
 		}
 		
 		if(raw_request[1].length == 0){
-			System.out.println("Malformed mode.");
+			Util.log("Malformed mode.");
 			return false;
 		}
 		if(!RequestMode.valueExists(Util.bytesToString(raw_request[1]))){
-			System.out.println("Mode inexistent.");
-			System.out.println("Mode sent: " + Util.bytesToString(raw_request[1]));
+			Util.log("Mode " + Util.bytesToString(raw_request[1]) + " does not exist.");
 			return false;
 		}
 		
 		if(raw_request[2].length != 4){
-			System.out.println("Malformed reference.");
+			Util.log("Malformed reference.");
 			return false;
 		}
 		
 		if(raw_request[3].length == 0){
-			System.out.println("Sender is empty");
+			Util.log("Sender is empty");
 			return false;
 		}
 		
 		if(raw_request[4].length == 0){
-			System.out.println("Nick is empty");
+			Util.log("Nick is empty");
 			return false;
 		}
 		if(raw_request[5].length == 0){
-			System.out.println("Subject is empty");
+			Util.log("Subject is empty");
 			return false;
 		}
-		
 		return true;	
 	}
 }

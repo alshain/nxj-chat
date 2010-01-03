@@ -13,6 +13,6 @@ public class PingBotStatus extends EnumReplacement {
 	public static final PingBotStatus PASSIVE = new PingBotStatus("passive");
 	
 	public static PingBotStatus getFromString(String name){
-		return (PingBotStatus) EnumReplacement.getFromString(name);
+		return (PingBotStatus) EnumReplacement.fromString(name);
 	}
 }

@@ -11,7 +11,7 @@ import lejos.nxt.comm.*;
 
 public class PlayGound {
 	public static SensorMount sMount = SensorMount.getInstance();
-	public static BaseUnit base = new BaseUnit();
+	public static BaseUnit base = BaseUnit.getInstance();
 	
 	public static void main( String[] args) throws Exception{
 		base.setOrientation(Orientation.BACKWARD);

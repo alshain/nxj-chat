@@ -1,51 +1,49 @@
 package ch.nksa.pu.robotics.libs;
 
+import ch.nksa.pu.robotics.libs.RequestMode;
 import ch.nksa.pu.robotics.libs.Util;
 
 public class OutgoingRequest extends Request{
 	protected boolean hasBeenSent = false;
 	protected Thread sentTest;
 	
-	public OutgoingRequest(String sender, String nick, String subject, byte[][] data){
-		super(sender, nick, subject, data);
-		initializeRequest(sender, nick, subject, data);
+	public OutgoingRequest(RequestOwner owner, String sender, String nick, String subject, byte[][] data){
+		super(owner, sender, nick, subject, data);
+		initializeRequest(data);
 	}
 	
-	public OutgoingRequest(String sender, String subject, byte[][] data){
-		super(subject, "default", subject, data);
-		initializeRequest(sender, nick, subject, data);
+	public OutgoingRequest(RequestOwner owner, String sender, String subject, byte[][] data){
+		super(owner, sender, "default", subject, data);
+		initializeRequest(data);
 	}
 
 	
-	private OutgoingRequest(RequestMode mode, Request reference, 
+	protected OutgoingRequest(RequestOwner owner, RequestMode mode, Request reference, 
 							String sender, String nick, String subject, byte[][] data){
-		super(mode, sender, nick, subject, data);
+		super(owner, sender, nick, subject, data);
 		this.mode = mode;
 		this.reference = reference;
-		initializeRequest(sender, nick, subject, data);
+		initializeRequest(data);
 	}
 	
-	private void initializeRequest(String sender, String nick, String subject, byte[][] data){
-		this.sender = sender;
-		this.nick = nick;
-		this.subject = subject;
+	protected void initializeRequest(byte[][] data){
 		this.data = data;
 		sentTest = new Thread(){
 			public void run(){
 				while(!isSent()){}
-				System.out.println("Request " + id + " has been sent.");
+				Util.log("Request " + id + " has been sent.");
 			}
 		};
 		sentTest.start();
-		Uplink.getInstance().registerRequest(this);
+		owner.registerRequest(this);
 	}
 	
 	public OutgoingRequest followUp(byte[][] data){
-		return new OutgoingRequest(RequestMode.FOLLOW_UP, this, sender, nick, subject, data);
+		return new OutgoingRequest(owner, RequestMode.FOLLOW_UP, this, getSender(), nick, subject, data);
 	}
 	
 	public OutgoingRequest followUp(String new_subject, byte[][] data){
-		return new OutgoingRequest(RequestMode.FOLLOW_UP, this, sender, nick, new_subject, data);
+		return new OutgoingRequest(owner, RequestMode.FOLLOW_UP, this, getSender(), nick, new_subject, data);
 	}
 	
 	protected Thread getSendCheckThread(){
@@ -55,8 +53,6 @@ public class OutgoingRequest extends Request{
 	public boolean isSent(){
 		return hasBeenSent;
 	}
-	
-
 	
 	public Thread getWaitingThread(){
 		Thread temp = new Thread(){
@@ -85,7 +81,7 @@ public class OutgoingRequest extends Request{
 		header[1] = Util.stringToBytes(mode.toString());
 		header[2] = Util.intToBytes(getReferenceId());
 		
-		header[3] = Util.stringToBytes(this.sender);
+		header[3] = Util.stringToBytes(getSender());
 
 		header[4] = Util.stringToBytes(nick);
 		

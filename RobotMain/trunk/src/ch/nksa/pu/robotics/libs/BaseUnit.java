@@ -5,14 +5,22 @@ import lejos.nxt.*;
 public class BaseUnit {
 	public static Motor mLeft;
 	public static Motor mRight;
+	protected static BaseUnit instance;
 	public enum Orientation{
 		FORWARD,  //i.e. the NXT brick pointing to the forward direction 
 		BACKWARD; //i.e. the NXT brick pointing to the backward direction
 	}
 	protected static Orientation currentOrientation = Orientation.FORWARD;
 	
-	public BaseUnit(){
+	protected BaseUnit(){
 		setOrientation(Orientation.FORWARD);
+	}
+	
+	public static BaseUnit getInstance(){
+		if(instance == null){
+			instance = new BaseUnit();
+		}
+		return instance;
 	}
 	
 	public void setOrientation(Orientation orientation){
@@ -58,7 +66,7 @@ public class BaseUnit {
 	public void setSpeedPercentage(int speed){
 		int max_speed = 900;
 		float result = max_speed * speed / 100;
-		System.out.println(result);
+		Util.log(result);
 		setSpeed((int) result);
 	}
 	
