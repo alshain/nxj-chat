@@ -10,7 +10,7 @@ import lejos.nxt.*;
 import lejos.nxt.comm.*;
 
 public class PlayGound {
-	public static SensorMount sMount = new SensorMount();
+	public static SensorMount sMount = SensorMount.getInstance();
 	public static BaseUnit base = new BaseUnit();
 	
 	public static void main( String[] args) throws Exception{

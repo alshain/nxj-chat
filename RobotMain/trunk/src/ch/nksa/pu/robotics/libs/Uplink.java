@@ -17,7 +17,7 @@ public class Uplink {
 	protected Thread receivingThread;
 	protected Thread sendingThread;
 	protected static Uplink instance;
-	protected volatile ArrayList<IncomingRequestHelper> listeners = new ArrayList<IncomingRequestHelper>();
+	protected volatile ArrayList<IncomingRequest> listeners = new ArrayList<IncomingRequest>();
 	protected ArrayList<byte[][]> rawIncoming = new ArrayList<byte[][]>();
 	protected ArrayList<IncomingRequest> incomingRequests = new ArrayList<IncomingRequest>();
 	protected ArrayList<OutgoingRequest> outgoingRequests = new ArrayList<OutgoingRequest>();
@@ -73,7 +73,7 @@ public class Uplink {
 		outgoingRequests.add(req);
 	}
 	
-	public void registerListener(IncomingRequestHelper l){
+	public void registerListener(IncomingRequest l){
 		System.out.println("Adding listener to Uplink.");
 		synchronized(listeners){
 			listeners.add(l);
@@ -150,9 +150,12 @@ public class Uplink {
 		System.out.println("Listening...");
 		Thread waiting;
 		int length = 0;
+		receiving:
 		while(true){
 			try {
+				System.out.println("Waiting for request ("+incomingRequests.size()+ ")...");
 				int lines = dis.readInt();
+				System.out.println("Expecting " + lines + " lines.");
 				byte[][] incoming = new byte[lines][];
 				for(int i = 0; i < lines; i++){
 					length = dis.readInt();
@@ -166,32 +169,22 @@ public class Uplink {
 					System.out.println(">Unexpected behaviour may follow!");
 					continue;
 				}
+				System.out.println("Synchronizing...");
 				synchronized (listeners) {
+					System.out.println("Synchronized.");
 					this.requestStruct = new RequestStruct(incoming);
 					System.out.println("Passing request " + this.requestStruct.sender + " to " + listeners.size() + " Listeners.");
-					for(IncomingRequestHelper l: listeners){
-						System.out.println("Make active...");
-						l.last = false;
-						waiting = l.makeActive();
-						System.out.println("is Active...");
-						try {
-							System.out.println("Waiting for join...");
-							waiting.join();
-						} catch (InterruptedException e) {}
-						//System.out.println("Validations are over.");
-						if(l.last){
-							break;
+					for(IncomingRequest l: listeners){
+						IncomingRequest req = l.validate(requestStruct);
+						if(req != null){
+							incomingRequests.add(req);
+							continue receiving;
 						}
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-						}
-						//System.out.println("No listener has been found. Pass to BasicRequest.");
-						BasicIncomingRequest req =  BasicIncomingRequest.validate(incoming);
-						incomingRequests.add(req);
 					}
 				}
+				System.out.println("No listener has been found. Passing to BasicRequest.");
+				BasicIncomingRequest req =  BasicIncomingRequest.validate(incoming);
+				incomingRequests.add(req);
 			} catch (IOException e) {
 				System.out.println("Bluetooth has been terminated unexpectedly.");
 				break;

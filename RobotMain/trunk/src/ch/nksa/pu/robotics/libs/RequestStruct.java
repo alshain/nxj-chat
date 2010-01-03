@@ -28,9 +28,12 @@ public class RequestStruct {
 		subject =  Util.bytesToString(raw_request[5]);
 		
 		//copy data
-		byte[][] data = new byte[raw_request.length - 6][];
+		data = new byte[raw_request.length - 6][];
 		for(int i = 6; i < raw_request.length; i++){
-			data[i - 6] = raw_request[i];
+			data[i - 6] = new byte[raw_request[i].length];
+			for(int k = 0; k < raw_request[i].length; k++){
+				data[i - 6][k] = raw_request[i][k];
+			}
 		}
 	}
 }

@@ -6,12 +6,19 @@ public class SensorMount {
 	public Motor positionLight = Motor.B;
 	public LightSensor light = new LightSensor(SensorPort.S1);
 	public UltrasonicSensor uSonic = new UltrasonicSensor(SensorPort.S2);
+	private static SensorMount instance;
 	
 	protected long lastPing = 0;
 	protected static int sonicDelay = 500; 
 	
+	public static SensorMount getInstance(){
+		if(instance == null){
+			instance = new SensorMount();
+		}
+		return instance;
+	}
 	
-	public SensorMount(){
+	private SensorMount(){
 		light.setFloodlight(false);
 	}
 	

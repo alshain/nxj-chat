@@ -19,7 +19,7 @@ public class EnumReplacement {
 	
 	public static EnumReplacement getFromString(String name){
 		for(EnumReplacement e: list){
-			if(e.toString() == name){
+			if(e.toString().equals(name)){
 				return e;
 			}
 		}
@@ -28,7 +28,7 @@ public class EnumReplacement {
 	
 	public static Boolean valueExists(String name){
 		for(EnumReplacement e: list){
-			if(e.toString() == name){
+			if(e.toString().equals(name)){
 				return true;
 			}
 		}
