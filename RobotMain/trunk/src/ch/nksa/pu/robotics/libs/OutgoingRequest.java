@@ -6,28 +6,26 @@ import ch.nksa.pu.robotics.libs.Util;
 public class OutgoingRequest extends Request{
 	protected boolean hasBeenSent = false;
 	protected Thread sentTest;
+	protected boolean replyReceived = false;
 	
 	public OutgoingRequest(RequestOwner owner, String sender, String nick, String subject, byte[][] data){
 		super(owner, sender, nick, subject, data);
-		initializeRequest(data);
+		initializeRequest();
 	}
 	
 	public OutgoingRequest(RequestOwner owner, String sender, String subject, byte[][] data){
 		super(owner, sender, "default", subject, data);
-		initializeRequest(data);
+		initializeRequest();
 	}
 
 	
 	protected OutgoingRequest(RequestOwner owner, RequestMode mode, Request reference, 
 							String sender, String nick, String subject, byte[][] data){
-		super(owner, sender, nick, subject, data);
-		this.mode = mode;
-		this.reference = reference;
-		initializeRequest(data);
+		super(owner, mode, reference, sender, nick, subject, data);
+		initializeRequest();
 	}
 	
-	protected void initializeRequest(byte[][] data){
-		this.data = data;
+	protected void initializeRequest(){
 		sentTest = new Thread(){
 			public void run(){
 				while(!isSent()){}
@@ -54,19 +52,8 @@ public class OutgoingRequest extends Request{
 		return hasBeenSent;
 	}
 	
-	public Thread getWaitingThread(){
-		Thread temp = new Thread(){
-			public void run(){
-				//TODO implement waitForreply
-			}
-		};
-		temp.start();
-		return temp;
-	}
-	
 	public void waitForReply() throws InterruptedException{
-		getWaitingThread().join();
-		return;
+		waitForMonitor();
 	}
 	
 	public byte[][] getHeader(){

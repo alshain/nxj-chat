@@ -9,9 +9,9 @@ public class BasicIncomingPcRequest extends IncomingRequest {
 		super(owner, id, mode, sender, nick, subject, data);
 	}
 	
-	public BasicIncomingPcRequest(RequestMode response, String sender, 
+	public BasicIncomingPcRequest(RequestMode response, Request reference, String sender, 
 			String subject, byte[][] data) {
-		super(owner, response, sender, sender, subject, data);
+		super(owner, response, reference, sender, sender, subject, data);
 	}
 
 	public BasicIncomingPcRequest(byte[][] rawRequest) {
@@ -27,22 +27,14 @@ public class BasicIncomingPcRequest extends IncomingRequest {
 	}
 	
 	public BasicIncomingPcRequest reply(byte[][] data){
-		return new BasicIncomingPcRequest(RequestMode.RESPONSE, this.getSender(), this.subject, data);
+		return new BasicIncomingPcRequest(RequestMode.RESPONSE, this, this.getSender(), this.subject, data);
 	}
 	
 	
 	public BasicIncomingPcRequest reply(String new_subject, byte [][] data){
-		return new BasicIncomingPcRequest(RequestMode.RESPONSE, this.getSender(), new_subject, data);
+		return new BasicIncomingPcRequest(RequestMode.RESPONSE, this, this.getSender(), new_subject, data);
 	}
 
-	public static BasicIncomingPcRequest validate(byte[][] raw_request){
-		//System.out.println("Basic Request received, parsing.");
-		if(!IncomingRequest.headerIsValid(raw_request)){
-			return null;
-		}
-		return new BasicIncomingPcRequest(raw_request);
-	}
-	
 	public static void registerRequest(BasicIncomingPcRequest dummy){
 		IncomingRequest.registerRequest(dummy);
 	}

@@ -9,7 +9,7 @@ import ch.nksa.pu.g2007e.pingbot.SensorMount;
 import lejos.nxt.*;
 import lejos.nxt.comm.*;
 
-public class PlayGound {
+public class PlayGround {
 	public static SensorMount sMount = SensorMount.getInstance();
 	public static BaseUnit base = BaseUnit.getInstance();
 	

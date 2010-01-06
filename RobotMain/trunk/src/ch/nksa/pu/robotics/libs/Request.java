@@ -3,15 +3,26 @@ package ch.nksa.pu.robotics.libs;
 import ch.nksa.pu.robotics.libs.RequestStruct;
 
 public class Request {
+	protected RequestOwner owner;
 	protected int id;
 	protected RequestMode mode;
-	protected RequestOwner owner;
 	private String sender;
 	protected String nick;
 	protected String subject;
 	protected byte[][] data;
 	protected Request reference = null;
+	protected Object waitingMonitor = new Object();
 	
+	public Request(RequestOwner owner, RequestStruct req){
+		this.owner = owner;
+		readFromStruct(req);
+	}
+	
+	public boolean getReferenceById(int id, RequestMode mode, RequestOwner owner){
+		
+		return true;
+	}
+
 	public Request(RequestOwner owner, String sender, String nick,
 			String subject, byte[][] data) {
 		this.owner = owner;
@@ -22,7 +33,7 @@ public class Request {
 		this.data = data;
 	}
 	
-	public Request(RequestOwner owner, RequestMode mode, String sender, String nick,
+	public Request(RequestOwner owner, RequestMode mode,  Request reference, String sender, String nick,
 			String subject, byte[][] data) {
 		this.owner = owner;
 		this.mode = mode;
@@ -30,6 +41,7 @@ public class Request {
 		this.nick = nick;
 		this.subject = subject;
 		this.data = data;
+		setReference(mode, reference);
 	}
 	
 	public Request(RequestOwner owner, int id, RequestMode mode, String sender, String nick,
@@ -43,13 +55,8 @@ public class Request {
 		this.data = data;
 	}
 	
-	public Request(RequestOwner owner, RequestStruct req){
-		this.owner = owner;
-		readFromStruct(req);
-	}
-	
 	public Request(RequestOwner owner, byte[][] raw_request){
-		RequestStruct req = new RequestStruct(raw_request);
+		RequestStruct req = new RequestStruct(raw_request, owner);
 		this.owner = owner;
 		readFromStruct(req);
 	}
@@ -62,6 +69,15 @@ public class Request {
 		nick = req.nick;
 		subject = req.subject;
 		data = req.data;
+	}
+	
+	private void setReference(RequestMode mode, Request req){
+		if(RequestMode.FOLLOW_UP.toString().equals(mode)){
+			reference = owner.getIncomingRequest(req.id);
+		}
+		else{
+			reference = owner.getOutgoingRequest(req.id);
+		}
 	}
 	
 	public int getReferenceId(){
@@ -89,5 +105,26 @@ public class Request {
 	
 	public String getNick() {
 		return nick;
+	}
+	
+	protected void notifyReferenceWaitingMonitor(){
+		Util.log("notfiyBeforeNull");
+		if(reference != null){
+			Util.log("notfiyAfterNull");
+			reference.notifyWaitingMonitor();
+		}
+	}
+	
+	protected void notifyWaitingMonitor(){
+		Util.log("notifying");
+		synchronized (waitingMonitor) {
+			waitingMonitor.notifyAll();
+		}
+	}
+	
+	protected void waitForMonitor() throws InterruptedException{
+		synchronized (waitingMonitor) {
+			waitingMonitor.wait();
+		}
 	}
 }

@@ -95,7 +95,7 @@ public class RequestOwner {
 					
 					for(byte[] b: data){
 						dos.write(Util.intToBytes(b.length));
-						dos.write( b);
+						dos.write(b);
 					}
 					dos.flush();
 					req.hasBeenSent = true;
@@ -146,12 +146,13 @@ public class RequestOwner {
 				Util.log("Synchronizing...");
 				synchronized (listeners) {
 					Util.log("Synchronized.");
-					requestStruct = new RequestStruct(incoming);
-					Util.log("Passing request " + requestStruct.sender + " to " + listeners.size() + " Listeners.");
+					requestStruct = new RequestStruct(incoming, this);
+					Util.log("Passing request " + requestStruct.sender + " to " + listeners.size() + " listeners.");
 					for(IncomingRequest l: listeners){
-						IncomingRequest req = l.validate(requestStruct);
+						IncomingRequest req = l.validate(this, requestStruct);
 						if(req != null){
 							incomingRequests.add(req);
+							req.notifyReferenceWaitingMonitor();
 							continue receiving;
 						}
 					}
@@ -159,7 +160,7 @@ public class RequestOwner {
 				Util.log("No listener has been found. Passing to IncomingRequest.");
 				IncomingRequest req =  new IncomingRequest(this, requestStruct);
 				incomingRequests.add(req);
-			} catch (IOException e) {
+			} catch (IOException e){
 				Util.log("Bluetooth has been terminated unexpectedly.");
 				break;
 			}

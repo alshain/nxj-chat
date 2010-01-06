@@ -1,26 +1,30 @@
 package ch.nksa.pu.robotics.libs;
 
 public class RequestStruct {
-	public int id;
-	public RequestMode mode;
-	public String sender;
-	public String nick;
-	public String subject;
-	public byte[][] data;
+	public int id = -1;
+	public RequestMode mode = RequestMode.STATELESS;
+	public String sender = "";
+	public String nick = "";
+	public String subject = "";
+	public byte[][] data = {{}};
 	public Request reference = null;
+	public RequestOwner owner; 
 	
+	public RequestStruct(){
+		
+	}
 	
-	public RequestStruct(byte[][] raw_request){
+	public RequestStruct(byte[][] raw_request, RequestOwner owner){
 		id = Util.bytesToInt(raw_request[0]);
 		
 		String _mode = Util.bytesToString(raw_request[1]);
 		mode = RequestMode.getFromString(_mode);
 		
-		if(mode == RequestMode.FOLLOW_UP){
-			reference = Uplink.getInstance().getOutgoingRequest(Util.bytesToInt(raw_request[2]));
+		if(RequestMode.FOLLOW_UP.toString().equals(mode)){
+			reference = owner.getIncomingRequest(Util.bytesToInt(raw_request[2]));
 		}
-		else if(mode == RequestMode.RESPONSE){
-			reference = Uplink.getInstance().getIncomingRequest(Util.bytesToInt(raw_request[2]));
+		else if(RequestMode.RESPONSE.toString().equals(mode)){
+			reference = owner.getOutgoingRequest(Util.bytesToInt(raw_request[2]));
 		}
 		
 		sender = Util.bytesToString(raw_request[3]);

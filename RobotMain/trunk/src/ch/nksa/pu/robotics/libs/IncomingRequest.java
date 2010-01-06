@@ -12,9 +12,9 @@ public class IncomingRequest extends Request{
 		super(owner, raw_request);
 	}
 	
-	public IncomingRequest(RequestOwner owner, RequestMode mode, String sender, String nick,
+	public IncomingRequest(RequestOwner owner, RequestMode mode, Request reference, String sender, String nick,
 			String subject, byte[][] data) {
-		super(owner, mode, sender, nick, subject, data);
+		super(owner, mode, reference, sender, nick, subject, data);
 	}
 	
 	public IncomingRequest(RequestOwner owner, RequestStruct req){
@@ -25,12 +25,12 @@ public class IncomingRequest extends Request{
 		super(owner, -1, RequestMode.STATELESS, "", "", "", new byte[0][0]);
 	}
 
-	public static void registerRequest(IncomingRequest dummy){
+	protected static void registerRequest(IncomingRequest dummy){
 		Util.log("Registering Listener.");
 		dummy.owner.registerListener(dummy);
 	}
 	
-	protected IncomingRequest validate(RequestStruct req){
+	protected IncomingRequest validate(RequestOwner owner, RequestStruct req){
 		Util.log("!IncomingRequest.validate.");
 		Sound.buzz();
 		return null;

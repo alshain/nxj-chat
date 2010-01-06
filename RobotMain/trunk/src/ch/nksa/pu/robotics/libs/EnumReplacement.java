@@ -18,7 +18,11 @@ public class EnumReplacement {
 	}
 	
 	public boolean equals(EnumReplacement e){
-		return this.toString().equals(e.toString());
+		return this == e;
+	}
+	
+	public boolean equals(String str){
+		return this.toString().equals(str);
 	}
 	
 	public static EnumReplacement fromString(String name){

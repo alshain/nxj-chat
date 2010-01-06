@@ -1,7 +1,10 @@
 package ch.nksa.pu.g2007e.pingbot;
 
 import ch.nksa.pu.robotics.libs.BasicIncomingPcRequest;
+import ch.nksa.pu.robotics.libs.RequestOwner;
 import ch.nksa.pu.robotics.libs.RequestStruct;
+import ch.nksa.pu.robotics.libs.Uplink;
+import ch.nksa.pu.robotics.libs.Util;
 
 public class PingBotBasicInRequest extends BasicIncomingPcRequest {
 	protected static PingBotBasicInRequest dummy;
@@ -17,22 +20,22 @@ public class PingBotBasicInRequest extends BasicIncomingPcRequest {
 	public static void registerRequest(){
 		if(dummy == null){
 			dummy = new PingBotBasicInRequest();
-			BasicIncomingPcRequest.registerRequest(dummy);
 		}
+		BasicIncomingPcRequest.registerRequest(dummy);
 	}
 	
-	protected PingBotBasicInRequest validate(RequestStruct req){
-		System.out.println("Parsing PingBot");
+	protected PingBotBasicInRequest validate(RequestOwner owner, RequestStruct req){
+		Util.log("Parsing PingBot");
 		if("pingbot.basic".equals(req.sender)){
 			PingBotBasicInRequest req_ = new PingBotBasicInRequest(req);
-			System.out.println(req.subject);
+			Util.log(req.subject);
 			if(req.subject.equalsIgnoreCase("SearchLight")){
 				SensorMount.getInstance().enablePositionLight(req.data[0][0] == 1?true:false);
 			}
 			else if("GetDistance".equalsIgnoreCase(req.subject)){
-				PingBotBasicOutRequest.sendDistance(this);
+				PingBotBasicOutRequest.sendDistance(req_);
 			}
-			System.out.println("PingBotBasic success.");
+			Util.log("PingBotBasic success.");
 			return req_;
 		}
 		return null;
