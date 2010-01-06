@@ -21,4 +21,9 @@ public class BasicPingBotOutRequest extends BasicOutgoingPcRequest {
 		data[0] = Util.stringToBytes(status.toString());
 		return new BasicPingBotOutRequest(slave, "SetStatus", data);
 	}
+	
+	public static BasicPingBotOutRequest getDistance(Slave slave){
+		byte[][] data = {{0}};
+		return new BasicPingBotOutRequest(slave, "GetDistance", data);
+	}
 }

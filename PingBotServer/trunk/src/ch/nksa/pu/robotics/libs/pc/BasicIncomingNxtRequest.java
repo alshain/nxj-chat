@@ -2,6 +2,7 @@ package ch.nksa.pu.robotics.libs.pc;
 
 import ch.nksa.pu.robotics.libs.BasicIncomingPcRequest;
 import ch.nksa.pu.robotics.libs.IncomingRequest;
+import ch.nksa.pu.robotics.libs.Request;
 import ch.nksa.pu.robotics.libs.RequestMode;
 import ch.nksa.pu.robotics.libs.RequestOwner;
 import ch.nksa.pu.robotics.libs.RequestStruct;
@@ -12,9 +13,9 @@ public class BasicIncomingNxtRequest extends IncomingRequest {
 		super(owner, id, mode, sender, nick, subject, data);
 	}
 	
-	public BasicIncomingNxtRequest(RequestOwner owner, RequestMode response,
+	public BasicIncomingNxtRequest(RequestOwner owner, RequestMode mode, Request reference,
 			String sender, String subject, byte[][] data) {
-		super(owner, response, sender, sender, subject, data);
+		super(owner, mode, reference, sender, sender, subject, data);
 	}
 
 	public BasicIncomingNxtRequest(Slave owner, byte[][] rawRequest) {
@@ -25,7 +26,7 @@ public class BasicIncomingNxtRequest extends IncomingRequest {
 		super(owner, req);
 	}
 
-	private BasicIncomingNxtRequest(Slave owner) {
+	protected BasicIncomingNxtRequest(Slave owner) {
 		super(owner);
 	}
 	
@@ -39,12 +40,12 @@ public class BasicIncomingNxtRequest extends IncomingRequest {
 				this.getSender(), this.nick, new_subject, data);
 	}
 	
-	public static BasicIncomingNxtRequest validate(Slave owner, byte[][] raw_request){
+	public BasicIncomingNxtRequest validate(Slave owner, byte[][] raw_request){
 		System.out.println("Basic Request received, parsing.");
 		return new BasicIncomingNxtRequest(owner, raw_request);
 	}
 	
-	public static void registerRequest(BasicIncomingPcRequest dummy){
+	protected static void registerRequest(BasicIncomingPcRequest dummy){
 		IncomingRequest.registerRequest(dummy);
 	}
 }

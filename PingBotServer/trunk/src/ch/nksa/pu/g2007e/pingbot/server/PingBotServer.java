@@ -10,6 +10,8 @@ import lejos.pc.comm.NXTComm;
 import lejos.pc.comm.NXTCommException;
 import lejos.pc.comm.NXTInfo;
 import ch.nksa.pu.g2007e.pingbot.enums.PingBotStatus;
+import ch.nksa.pu.robotics.libs.BasicIncomingPcRequest;
+import ch.nksa.pu.robotics.libs.pc.BasicOutgoingPcRequest;
 import ch.nksa.pu.robotics.libs.pc.MasterMind;
 
 public class PingBotServer {
@@ -32,19 +34,24 @@ public class PingBotServer {
         }
         String temp;
         Scanner in = new Scanner(System.in);
-        BasicPingBotOutRequest req;
+        BasicPingBotInRequest.registerListener(mind.getConnectedNxt(0));
+        BasicOutgoingPcRequest req;
         while(true){
         	temp = in.nextLine();
         	if("off".equalsIgnoreCase(temp)){
         		req = BasicPingBotOutRequest.searchLight(mind.getConnectedNxt(0), false);
-        		req.getWaitingThread().join();
+        	}
+        	else if("dis".equalsIgnoreCase(temp)){
+        		req = BasicPingBotOutRequest.getDistance(mind.getConnectedNxt(0));
+        		System.out.println("Waiting for reply.");
+        		req.waitForReply();
+        		System.out.println("Reply received.");
         	}
         	else if("exit".equalsIgnoreCase(temp)){
         		break;
         	}
         	else{
         		req = BasicPingBotOutRequest.searchLight(mind.getConnectedNxt(0), true);
-        		req.getWaitingThread().join();
         	}
         }
         System.out.println("Closing...");
