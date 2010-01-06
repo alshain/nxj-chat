@@ -9,8 +9,6 @@ import java.util.Scanner;
 import lejos.pc.comm.NXTComm;
 import lejos.pc.comm.NXTCommException;
 import lejos.pc.comm.NXTInfo;
-import ch.nksa.pu.g2007e.pingbot.enums.PingBotStatus;
-import ch.nksa.pu.robotics.libs.BasicIncomingPcRequest;
 import ch.nksa.pu.robotics.libs.pc.BasicOutgoingPcRequest;
 import ch.nksa.pu.robotics.libs.pc.MasterMind;
 
