@@ -44,7 +44,6 @@ public class Slave extends RequestOwner {
 				nxtComm.open(nxtInfo);
 				dis = new DataInputStream(nxtComm.getInputStream());
 				dos = new DataOutputStream(nxtComm.getOutputStream());
-				
 				initializeThreads();
 			} catch (NXTCommException e) {
 				// TODO Auto-generated catch block

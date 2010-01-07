@@ -26,4 +26,9 @@ public class BasicPingBotOutRequest extends BasicOutgoingPcRequest {
 		byte[][] data = {{0}};
 		return new BasicPingBotOutRequest(slave, "GetDistance", data);
 	}
+	
+	public static BasicPingBotOutRequest findLight(Slave slave){
+		byte[][] data = {{0}};
+		return new BasicPingBotOutRequest(slave, "FindLight", data);
+	}
 }
