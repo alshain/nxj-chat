@@ -25,14 +25,13 @@ public class PingBotBasicInRequest extends BasicIncomingPcRequest {
 	}
 	
 	protected PingBotBasicInRequest validate(RequestOwner owner, RequestStruct req){
-		Util.log("Parsing PingBot");
 		if("pingbot.basic".equals(req.sender)){
 			PingBotBasicInRequest req_ = new PingBotBasicInRequest(req);
-			Util.log(req.subject);
 			if(req.subject.equalsIgnoreCase("SearchLight")){
 				SensorMount.getInstance().enablePositionLight(req.data[0][0] == 1?true:false);
 			}
 			else if("GetDistance".equalsIgnoreCase(req.subject)){
+				Util.log("ID: "+req.id);
 				PingBotBasicOutRequest.sendDistance(req_);
 			}
 			else if("FindLight".equalsIgnoreCase(req.subject)){
@@ -42,7 +41,6 @@ public class PingBotBasicInRequest extends BasicIncomingPcRequest {
 					// TODO Auto-generated catch block
 				}
 			}
-			Util.log("PingBotBasic success.");
 			return req_;
 		}
 		return null;

@@ -5,35 +5,37 @@ import ch.nksa.pu.robotics.libs.Util;
 
 public class OutgoingRequest extends Request{
 	protected boolean hasBeenSent = false;
-	protected Thread sentTest;
+	protected Thread sentTest = null;
 	protected boolean replyReceived = false;
 	
 	public OutgoingRequest(RequestOwner owner, String sender, String nick, String subject, byte[][] data){
 		super(owner, sender, nick, subject, data);
-		initializeRequest();
+		send();
 	}
 	
 	public OutgoingRequest(RequestOwner owner, String sender, String subject, byte[][] data){
 		super(owner, sender, "default", subject, data);
-		initializeRequest();
+		send();
 	}
 
 	
 	protected OutgoingRequest(RequestOwner owner, RequestMode mode, Request reference, 
 							String sender, String nick, String subject, byte[][] data){
 		super(owner, mode, reference, sender, nick, subject, data);
-		initializeRequest();
+		send();
 	}
 	
-	protected void initializeRequest(){
-		sentTest = new Thread(){
-			public void run(){
-				while(!isSent()){}
-				Util.log("Request " + id + " has been sent.");
-			}
-		};
-		sentTest.start();
-		owner.registerRequest(this);
+	public synchronized void send(){
+		if(sentTest == null){
+			sentTest = new Thread(){
+				public void run(){
+					while(!isSent()){}
+					Util.log("Request " + id + " has been sent.");
+				}
+			};
+			sentTest.start();
+			owner.registerRequest(this);
+		}
 	}
 	
 	public OutgoingRequest followUp(byte[][] data){

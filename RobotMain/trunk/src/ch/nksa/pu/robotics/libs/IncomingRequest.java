@@ -8,10 +8,6 @@ public class IncomingRequest extends Request{
 		super(owner, id, mode, sender, nick, subject, data);
 	}
 	
-	public IncomingRequest(RequestOwner owner, byte[][] raw_request){
-		super(owner, raw_request);
-	}
-	
 	public IncomingRequest(RequestOwner owner, RequestMode mode, Request reference, String sender, String nick,
 			String subject, byte[][] data) {
 		super(owner, mode, reference, sender, nick, subject, data);

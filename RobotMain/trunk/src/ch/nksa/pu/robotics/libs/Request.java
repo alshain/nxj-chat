@@ -6,7 +6,7 @@ public class Request {
 	protected RequestOwner owner;
 	protected int id;
 	protected RequestMode mode;
-	private String sender;
+	protected String sender;
 	protected String nick;
 	protected String subject;
 	protected byte[][] data;
@@ -18,11 +18,6 @@ public class Request {
 		readFromStruct(req);
 	}
 	
-	public boolean getReferenceById(int id, RequestMode mode, RequestOwner owner){
-		
-		return true;
-	}
-
 	public Request(RequestOwner owner, String sender, String nick,
 			String subject, byte[][] data) {
 		this.owner = owner;
@@ -41,7 +36,7 @@ public class Request {
 		this.nick = nick;
 		this.subject = subject;
 		this.data = data;
-		setReference(mode, reference);
+		this.reference = reference;
 	}
 	
 	public Request(RequestOwner owner, int id, RequestMode mode, String sender, String nick,
@@ -54,12 +49,12 @@ public class Request {
 		this.subject = subject;
 		this.data = data;
 	}
-	
+	/*
 	public Request(RequestOwner owner, byte[][] raw_request){
 		RequestStruct req = new RequestStruct(raw_request, owner);
 		this.owner = owner;
 		readFromStruct(req);
-	}
+	}*/
 
 	private void readFromStruct(RequestStruct req){
 		id = req.id;
@@ -71,18 +66,6 @@ public class Request {
 		data = req.data;
 	}
 	
-	private void setReference(RequestMode mode, Request req){
-		Util.log(req.id);
-		//Util.log(mode.toString());
-		if(RequestMode.FOLLOW_UP.equals(mode)){
-			reference = owner.getIncomingRequest(req.id);
-			Util.log(reference.nick);
-		}
-		else{
-			reference = owner.getOutgoingRequest(req.id);
-		}
-	}
-	
 	public int getReferenceId(){
 		if(reference == null){
 			return -1;
@@ -90,10 +73,10 @@ public class Request {
 		return reference.id;
 	}
 	
-	public byte[][] getData(){
-		return data;
+	public int getId(){
+		return id;
 	}
-	
+
 	public RequestMode getMode(){
 		return mode;
 	}
@@ -101,13 +84,17 @@ public class Request {
 	public String getSender() {
 		return sender;
 	}
-	
+
+	public String getNick() {
+		return nick;
+	}
+
 	public String getSubject() {
 		return subject;
 	}
-	
-	public String getNick() {
-		return nick;
+
+	public byte[][] getData(){
+		return data;
 	}
 	
 	protected void notifyReferenceWaitingMonitor(){

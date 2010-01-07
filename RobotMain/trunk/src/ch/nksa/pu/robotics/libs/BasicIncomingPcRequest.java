@@ -14,10 +14,6 @@ public class BasicIncomingPcRequest extends IncomingRequest {
 		super(owner, response, reference, sender, sender, subject, data);
 	}
 
-	public BasicIncomingPcRequest(byte[][] rawRequest) {
-		super(owner, rawRequest);
-	}
-
 	public BasicIncomingPcRequest(RequestStruct req) {
 		super(owner, req);
 	}
