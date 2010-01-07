@@ -35,6 +35,13 @@ public class PingBotBasicInRequest extends BasicIncomingPcRequest {
 			else if("GetDistance".equalsIgnoreCase(req.subject)){
 				PingBotBasicOutRequest.sendDistance(req_);
 			}
+			else if("FindLight".equalsIgnoreCase(req.subject)){
+				try {
+					PingBot.searchTheLight();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+				}
+			}
 			Util.log("PingBotBasic success.");
 			return req_;
 		}

@@ -10,8 +10,8 @@ public class RequestStruct {
 	public Request reference = null;
 	public RequestOwner owner; 
 	
-	public RequestStruct(){
-		
+	public RequestStruct(RequestOwner owner){
+		this.owner = owner;
 	}
 	
 	public RequestStruct(byte[][] raw_request, RequestOwner owner){

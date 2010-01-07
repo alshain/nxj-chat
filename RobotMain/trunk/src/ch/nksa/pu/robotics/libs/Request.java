@@ -72,8 +72,11 @@ public class Request {
 	}
 	
 	private void setReference(RequestMode mode, Request req){
-		if(RequestMode.FOLLOW_UP.toString().equals(mode)){
+		Util.log(req.id);
+		//Util.log(mode.toString());
+		if(RequestMode.FOLLOW_UP.equals(mode)){
 			reference = owner.getIncomingRequest(req.id);
+			Util.log(reference.nick);
 		}
 		else{
 			reference = owner.getOutgoingRequest(req.id);

@@ -25,15 +25,6 @@ public class EnumReplacement {
 		return this.toString().equals(str);
 	}
 	
-	public static EnumReplacement fromString(String name){
-		for(EnumReplacement e: list){
-			if(e.toString().equals(name)){
-				return e;
-			}
-		}
-		return null;
-	}
-	
 	public static Boolean valueExists(String name){
 		for(EnumReplacement e: list){
 			if(e.toString().equals(name)){
@@ -43,6 +34,15 @@ public class EnumReplacement {
 		return false;
 	}
 	
+	public static EnumReplacement fromString(String name){
+		for(EnumReplacement e: list){
+			if(e.toString().equals(name)){
+				return e;
+			}
+		}
+		return null;
+	}
+
 	public static EnumReplacement fromDataArray(byte[] data){
 		if(data.length > 0){
 			return EnumReplacement.fromString(Util.bytesToString(data));
