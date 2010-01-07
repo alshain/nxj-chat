@@ -42,7 +42,7 @@ public class PingBotServer {
         	else if("dis".equalsIgnoreCase(temp)){
         		req = BasicPingBotOutRequest.getDistance(mind.getConnectedNxt(0));
         		System.out.println("Waiting for reply.");
-        		//req.waitForReply();
+        		req.waitForReply();
         		System.out.println("Reply received.");
         	}
         	else if("search".equalsIgnoreCase(temp)){

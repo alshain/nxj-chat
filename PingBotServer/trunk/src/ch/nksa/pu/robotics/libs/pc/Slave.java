@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import ch.nksa.pu.robotics.libs.RequestOwner;
+import ch.nksa.pu.robotics.libs.RequestStruct;
 
 import lejos.pc.comm.*;
 
@@ -16,8 +17,8 @@ public class Slave extends RequestOwner {
 	//protected SlaveState state = SlaveState.UNREACHABLE; 
 	protected NXTComm nxtComm;
 	protected NXTInfo nxtInfo;
-	protected volatile ArrayList<BasicIncomingNxtRequest> incomingRequests = new ArrayList<BasicIncomingNxtRequest>();
-	protected volatile ArrayList<BasicOutgoingPcRequest> outgoingRequests = new ArrayList<BasicOutgoingPcRequest>();
+	//protected volatile ArrayList<BasicIncomingNxtRequest> incomingRequests = new ArrayList<BasicIncomingNxtRequest>();
+	//protected volatile ArrayList<BasicOutgoingPcRequest> outgoingRequests = new ArrayList<BasicOutgoingPcRequest>();
 	
 	/*public enum SlaveState{
 		UNREACHABLE,
@@ -74,28 +75,31 @@ public class Slave extends RequestOwner {
 		return address;
 	}
 	
-
-	
 	public BasicOutgoingPcRequest sendGenericRequest(String sender, String nick, String subject, byte[][] data){
-		return new BasicOutgoingPcRequest(this, sender, nick, subject, data);
+		RequestStruct req = new RequestStruct(this);
+		req.sender = sender;
+		req.nick = nick;
+		req.subject = subject;
+		req.data = data;
+		return new BasicOutgoingPcRequest(req);
 	}
 	
 	public BasicOutgoingPcRequest sendGenericRequest(String sender, String nick, String subject, String content){
 		byte[][] data = new byte[1][];
 		data[0] = content.getBytes();
-		return new BasicOutgoingPcRequest(this, sender, nick, subject, data);
+		return sendGenericRequest(sender, nick, subject, data);
 	}
 	
 	public BasicOutgoingPcRequest getOutgoingRequest(int id){
-		if(outgoingRequests.size() > id){
-			return outgoingRequests.get(id);
+		if(outgoingRequests.size() > id && id >= 0){
+			return (BasicOutgoingPcRequest) outgoingRequests.get(id);
 		}
 		return null;
 	}
 	
 	public BasicIncomingNxtRequest getIncomingRequest(int id){
 		if(incomingRequests.size() > id){
-			return incomingRequests.get(id);
+			return (BasicIncomingNxtRequest) incomingRequests.get(id);
 		}
 		return null;
 	}
