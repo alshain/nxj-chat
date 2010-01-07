@@ -32,7 +32,7 @@ public class PingBotBasicInRequest extends BasicIncomingPcRequest {
 			}
 			else if("GetDistance".equalsIgnoreCase(req.subject)){
 				Util.log("ID: "+req.id);
-				PingBotBasicOutRequest.sendDistance(req_);
+				PingBotBasicOutRequest.sendDistance(req_).send();
 			}
 			else if("FindLight".equalsIgnoreCase(req.subject)){
 				try {

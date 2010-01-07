@@ -3,22 +3,12 @@ package ch.nksa.pu.robotics.libs;
 import lejos.nxt.Sound;
 
 public class IncomingRequest extends Request{
-	protected IncomingRequest(RequestOwner owner, int id, RequestMode mode, String sender, String nick,
-			String subject, byte[][] data) {
-		super(owner, id, mode, sender, nick, subject, data);
-	}
-	
-	public IncomingRequest(RequestOwner owner, RequestMode mode, Request reference, String sender, String nick,
-			String subject, byte[][] data) {
-		super(owner, mode, reference, sender, nick, subject, data);
-	}
-	
-	public IncomingRequest(RequestOwner owner, RequestStruct req){
-		super(owner, req);
-	}
-	
 	protected IncomingRequest(RequestOwner owner){
-		super(owner, -1, RequestMode.STATELESS, "", "", "", new byte[0][0]);
+		super(owner);
+	}
+
+	public IncomingRequest(RequestStruct requestStruct) {
+		super(requestStruct);
 	}
 
 	protected static void registerRequest(IncomingRequest dummy){

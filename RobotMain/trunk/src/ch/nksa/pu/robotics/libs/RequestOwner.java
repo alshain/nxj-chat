@@ -146,7 +146,7 @@ public class RequestOwner {
 				Util.log("Synchronizing...");
 				synchronized (listeners) {
 					Util.log("Synchronized.");
-					requestStruct = new RequestStruct(incoming, this);
+					requestStruct = new RequestStruct(this, incoming);
 					Util.log("Passing request " + requestStruct.sender + " to " + listeners.size() + " listeners.");
 					for(IncomingRequest l: listeners){
 						IncomingRequest req = l.validate(this, requestStruct);
@@ -158,7 +158,7 @@ public class RequestOwner {
 					}
 				}
 				Util.log("No listener has been found. Passing to IncomingRequest.");
-				IncomingRequest req =  new IncomingRequest(this, requestStruct);
+				IncomingRequest req =  new IncomingRequest(requestStruct);
 				incomingRequests.add(req);
 			} catch (IOException e){
 				Util.log("Bluetooth has been terminated unexpectedly.");

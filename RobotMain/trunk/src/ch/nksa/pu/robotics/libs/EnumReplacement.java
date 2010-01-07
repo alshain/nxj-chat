@@ -4,13 +4,19 @@ import java.util.ArrayList;
 
 public class EnumReplacement {
 	private final String name;
-	private static ArrayList<EnumReplacement> list = new ArrayList<EnumReplacement>();
+	private static ArrayList<ArrayList<EnumReplacement>> list = new ArrayList<ArrayList<EnumReplacement>>();
+	private static int nextIndex = 0;
 	//private static int nextOrdinal = 0;
 	//private final int ordinal = nextOrdinal++;
 	
-	protected EnumReplacement(String name){
+	protected static int registerEnum(){
+		list.add(new ArrayList<EnumReplacement>());
+		return nextIndex++;
+	}
+	
+	protected EnumReplacement(String name, int index){
 		this.name = name;
-		list.add(this);
+		list.get(index).add(this);
 	}
 	
 	public String toString(){
@@ -25,17 +31,18 @@ public class EnumReplacement {
 		return this.toString().equals(str);
 	}
 	
-	public static Boolean valueExists(String name){
-		for(EnumReplacement e: list){
-			if(e.toString().equals(name)){
+	public static Boolean valueExists(String name, int index){
+		for(EnumReplacement e: list.get(index)){
+			Util.log(e.toString());
+			if(e.equals(name)){
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public static EnumReplacement fromString(String name){
-		for(EnumReplacement e: list){
+	protected static EnumReplacement fromString(String name, int index){
+		for(EnumReplacement e: list.get(index)){
 			if(e.toString().equals(name)){
 				return e;
 			}
@@ -43,16 +50,16 @@ public class EnumReplacement {
 		return null;
 	}
 
-	public static EnumReplacement fromDataArray(byte[] data){
+	protected static EnumReplacement fromDataArray(byte[] data, int index){
 		if(data.length > 0){
-			return EnumReplacement.fromString(Util.bytesToString(data));
+			return EnumReplacement.fromString(Util.bytesToString(data), index);
 		}
 		return null;
 	}
 	
-	public static EnumReplacement fromDataArray(byte[][] data){
+	protected static EnumReplacement fromDataArray(byte[][] data, int index){
 		if(data.length == 1){
-			return EnumReplacement.fromDataArray(data[0]);
+			return EnumReplacement.fromDataArray(data[0], index);
 		}
 		return null;
 	}

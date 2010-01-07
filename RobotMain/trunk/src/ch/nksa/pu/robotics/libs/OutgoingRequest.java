@@ -4,28 +4,23 @@ import ch.nksa.pu.robotics.libs.RequestMode;
 import ch.nksa.pu.robotics.libs.Util;
 
 public class OutgoingRequest extends Request{
+	public OutgoingRequest(RequestStruct req) {
+		this(req, false);
+	}
+	
+	public OutgoingRequest(RequestStruct req, Boolean send) {
+		super(req);
+		if(send){
+			send();
+		}
+		// TODO Auto-generated constructor stub
+	}
+
 	protected boolean hasBeenSent = false;
 	protected Thread sentTest = null;
 	protected boolean replyReceived = false;
 	
-	public OutgoingRequest(RequestOwner owner, String sender, String nick, String subject, byte[][] data){
-		super(owner, sender, nick, subject, data);
-		send();
-	}
-	
-	public OutgoingRequest(RequestOwner owner, String sender, String subject, byte[][] data){
-		super(owner, sender, "default", subject, data);
-		send();
-	}
-
-	
-	protected OutgoingRequest(RequestOwner owner, RequestMode mode, Request reference, 
-							String sender, String nick, String subject, byte[][] data){
-		super(owner, mode, reference, sender, nick, subject, data);
-		send();
-	}
-	
-	public synchronized void send(){
+	public synchronized OutgoingRequest send(){
 		if(sentTest == null){
 			sentTest = new Thread(){
 				public void run(){
@@ -36,14 +31,7 @@ public class OutgoingRequest extends Request{
 			sentTest.start();
 			owner.registerRequest(this);
 		}
-	}
-	
-	public OutgoingRequest followUp(byte[][] data){
-		return new OutgoingRequest(owner, RequestMode.FOLLOW_UP, this, getSender(), nick, subject, data);
-	}
-	
-	public OutgoingRequest followUp(String new_subject, byte[][] data){
-		return new OutgoingRequest(owner, RequestMode.FOLLOW_UP, this, getSender(), nick, new_subject, data);
+		return this;
 	}
 	
 	protected Thread getSendCheckThread(){

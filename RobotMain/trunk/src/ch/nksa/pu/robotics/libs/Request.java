@@ -13,50 +13,16 @@ public class Request {
 	protected Request reference = null;
 	protected Object waitingMonitor = new Object();
 	
-	public Request(RequestOwner owner, RequestStruct req){
-		this.owner = owner;
+	public Request(RequestStruct req){
 		readFromStruct(req);
 	}
 	
-	public Request(RequestOwner owner, String sender, String nick,
-			String subject, byte[][] data) {
+	protected Request(RequestOwner owner) {
 		this.owner = owner;
-		this.mode = RequestMode.STATELESS;
-		this.sender = sender;
-		this.nick = nick;
-		this.subject = subject;
-		this.data = data;
 	}
-	
-	public Request(RequestOwner owner, RequestMode mode,  Request reference, String sender, String nick,
-			String subject, byte[][] data) {
-		this.owner = owner;
-		this.mode = mode;
-		this.sender = sender;
-		this.nick = nick;
-		this.subject = subject;
-		this.data = data;
-		this.reference = reference;
-	}
-	
-	public Request(RequestOwner owner, int id, RequestMode mode, String sender, String nick,
-			String subject, byte[][] data) {
-		this.owner = owner;
-		this.id = id;
-		this.mode = mode;
-		this.sender = sender;
-		this.nick = nick;
-		this.subject = subject;
-		this.data = data;
-	}
-	/*
-	public Request(RequestOwner owner, byte[][] raw_request){
-		RequestStruct req = new RequestStruct(raw_request, owner);
-		this.owner = owner;
-		readFromStruct(req);
-	}*/
 
 	private void readFromStruct(RequestStruct req){
+		owner = req.owner;
 		id = req.id;
 		mode = req.mode;
 		reference = req.reference;

@@ -3,9 +3,9 @@ package ch.nksa.pu.g2007e.pingbot.enums;
 import ch.nksa.pu.robotics.libs.EnumReplacement;
 
 public class PingBotStatus extends EnumReplacement {
-
+	private static int index = EnumReplacement.registerEnum();
 	public PingBotStatus(String name) {
-		super(name);
+		super(name, index);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -13,6 +13,6 @@ public class PingBotStatus extends EnumReplacement {
 	public static final PingBotStatus PASSIVE = new PingBotStatus("passive");
 	
 	public static PingBotStatus getFromString(String name){
-		return (PingBotStatus) EnumReplacement.fromString(name);
+		return (PingBotStatus) EnumReplacement.fromString(name, index);
 	}
 }

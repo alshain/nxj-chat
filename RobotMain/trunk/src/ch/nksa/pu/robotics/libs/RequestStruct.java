@@ -16,25 +16,32 @@ public class RequestStruct {
 	
 	public RequestStruct(Request ref, RequestMode mode){
 		this.mode = mode;
-		
+		owner = ref.owner;
 		sender = ref.sender;
 		nick = ref.nick;
 		subject = ref.subject;
+		reference = ref; 
 	}
 	
-	public static RequestStruct asReply(Request ref){
-		return new RequestStruct(ref, RequestMode.RESPONSE);
+	public RequestStruct(RequestOwner owner, RequestMode mode,
+			Request req, String sender,
+			String nick, String subject, byte[][] data) {
+		this.owner = owner;
+		this.mode = mode;
+		this.reference = req;
+		this.sender = sender;
+		this.nick = nick;
+		this.subject = subject;
+		this.data = data;
 	}
-	
-	public static RequestStruct asFollowUp(Request ref){
-		return new RequestStruct(ref, RequestMode.FOLLOW_UP);
-	}
-	
-	public RequestStruct(byte[][] raw_request, RequestOwner owner){
+
+	public RequestStruct(RequestOwner owner, byte[][] raw_request){
+		this.owner = owner;
 		id = Util.bytesToInt(raw_request[0]);
 		
 		String _mode = Util.bytesToString(raw_request[1]);
 		mode = RequestMode.getFromString(_mode);
+		
 		
 		if(RequestMode.FOLLOW_UP.equals(mode)){
 			reference = owner.getIncomingRequest(Util.bytesToInt(raw_request[2]));
@@ -55,5 +62,18 @@ public class RequestStruct {
 				data[i - 6][k] = raw_request[i][k];
 			}
 		}
+	}
+
+	public RequestStruct(RequestOwner owner, String sender, String subject,
+			byte[][] data) {
+		this(owner, RequestMode.STATELESS, null, sender, "default", subject, data);
+	}
+
+	public static RequestStruct asReply(Request ref){
+		return new RequestStruct(ref, RequestMode.RESPONSE);
+	}
+	
+	public static RequestStruct asFollowUp(Request ref){
+		return new RequestStruct(ref, RequestMode.FOLLOW_UP);
 	}
 }
