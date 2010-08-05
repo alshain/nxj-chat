@@ -2,7 +2,7 @@ package ch.nksa.pu.robotics.libs;
 
 
 public class BasicIncomingPcRequest extends IncomingRequest {
-	//!warning: hides non-static owner of super! 
+	//!ATTENTION: hides non-static owner of super! 
 	protected static Uplink owner = Uplink.getInstance();
 
 	public BasicIncomingPcRequest(RequestStruct req) {

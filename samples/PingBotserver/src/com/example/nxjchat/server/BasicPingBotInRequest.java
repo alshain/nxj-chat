@@ -1,5 +1,7 @@
 package com.example.nxjchat.server;
 
+import java.util.ArrayList;
+
 import ch.nksa.pu.robotics.libs.Request;
 import ch.nksa.pu.robotics.libs.RequestMode;
 import ch.nksa.pu.robotics.libs.RequestOwner;
@@ -9,7 +11,7 @@ import ch.nksa.pu.robotics.libs.pc.BasicIncomingNxtRequest;
 import ch.nksa.pu.robotics.libs.pc.Slave;
 
 public class BasicPingBotInRequest extends BasicIncomingNxtRequest {
-	protected static BasicPingBotInRequest dummy;
+	protected static ArrayList<BasicIncomingNxtRequest> listeners = new ArrayList<BasicIncomingNxtRequest>();
 
 	public BasicPingBotInRequest(RequestStruct req) {
 		super(req);
@@ -21,10 +23,10 @@ public class BasicPingBotInRequest extends BasicIncomingNxtRequest {
 	}
 	
 	public static void registerListener(Slave slave){
-		if(dummy == null){
-			dummy = new BasicPingBotInRequest(slave); 
+		if(!BasicIncomingNxtRequest.listenerExists(listeners, slave)){
+			BasicPingBotInRequest dummy = new BasicPingBotInRequest(slave);
+			listeners.add(dummy);
 		}
-		BasicIncomingNxtRequest.registerRequest(dummy);
 	}
 	
 	public BasicPingBotInRequest validate(RequestOwner owner, RequestStruct req_){

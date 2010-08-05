@@ -1,10 +1,9 @@
 package ch.nksa.pu.robotics.libs.pc;
 
+import java.util.ArrayList;
 import ch.nksa.pu.robotics.libs.BasicIncomingPcRequest;
 import ch.nksa.pu.robotics.libs.IncomingRequest;
-import ch.nksa.pu.robotics.libs.Request;
 import ch.nksa.pu.robotics.libs.RequestMode;
-import ch.nksa.pu.robotics.libs.RequestOwner;
 import ch.nksa.pu.robotics.libs.RequestStruct;
 
 public class BasicIncomingNxtRequest extends IncomingRequest {
@@ -16,11 +15,19 @@ public class BasicIncomingNxtRequest extends IncomingRequest {
 		super(owner);
 	}
 	
+	protected static boolean listenerExists(ArrayList<BasicIncomingNxtRequest> list, Slave slave){
+		for(BasicIncomingNxtRequest r: list){
+			if(slave == r.owner){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public BasicOutgoingPcRequest reply(String new_subject, byte [][] data){
 		return new BasicOutgoingPcRequest(
 				new RequestStruct(owner, RequestMode.FOLLOW_UP, this, getSender(), nick, new_subject, data)
 			);
-
 	}
 	
 	public BasicIncomingNxtRequest validate(Slave owner, byte[][] raw_request){

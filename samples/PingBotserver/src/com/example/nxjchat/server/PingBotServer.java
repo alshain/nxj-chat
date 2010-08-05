@@ -11,9 +11,10 @@ import lejos.pc.comm.NXTCommException;
 import lejos.pc.comm.NXTInfo;
 import ch.nksa.pu.robotics.libs.pc.BasicOutgoingPcRequest;
 import ch.nksa.pu.robotics.libs.pc.MasterMind;
+import ch.nksa.pu.robotics.libs.pc.Slave;
 
 public class PingBotServer {
-	public static String[][] btAddresses = {{"nxt12", "00:16:53:06:e7:ab"}, {"nxt4", "00:16:53:09:76:19"}};
+	public static String[][] btAddresses = {{"alias", "address"}, {"alias2", "address2"}};
 	public static List<NXTComm> connections = new ArrayList<NXTComm>();
 	public static List<NXTInfo> connectionInfos = new ArrayList<NXTInfo>();
 	public static MasterMind mind;
@@ -33,23 +34,33 @@ public class PingBotServer {
         String temp;
         Scanner in = new Scanner(System.in);
         BasicPingBotInRequest.registerListener(mind.getConnectedNxt(0));
+        BasicPingBotInRequest.registerListener(mind.getConnectedNxt(1));
         BasicOutgoingPcRequest req;
+        Slave nxt = mind.getConnectedNxt(0);
         while(true){
         	temp = in.nextLine();
         	if("off".equalsIgnoreCase(temp)){
-        		req = BasicPingBotOutRequest.searchLight(mind.getConnectedNxt(0), false);
+        		req = BasicPingBotOutRequest.searchLight(nxt, false);
         	}
         	else if("dis".equalsIgnoreCase(temp)){
-        		req = BasicPingBotOutRequest.getDistance(mind.getConnectedNxt(0));
+        		req = BasicPingBotOutRequest.getDistance(nxt);
         		System.out.println("Waiting for reply.");
         		req.waitForReply();
         		System.out.println("Reply received.");
         	}
         	else if("search".equalsIgnoreCase(temp)){
-        		req = BasicPingBotOutRequest.findLight(mind.getConnectedNxt(0));
+        		req = BasicPingBotOutRequest.findLight(nxt);
         	}
         	else if("exit".equalsIgnoreCase(temp)){
         		break;
+        	}
+        	else if("1".equalsIgnoreCase(temp)){
+            	nxt = mind.getConnectedNxt(1);
+            	System.out.println("Active NXT: 1");
+        	}
+        	else if("0".equalsIgnoreCase(temp)){
+            	nxt = mind.getConnectedNxt(0);
+            	System.out.println("Active NXT: 0");
         	}
         	else{
         		req = BasicPingBotOutRequest.searchLight(mind.getConnectedNxt(0), true);
