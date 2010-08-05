@@ -1,11 +1,10 @@
 /**
  * This unit is intended for testing purposes only.
  */
-package ch.nksa.pu.g2007e.pingbot;
+package com.example.nxjchat.client;
 
 import ch.nksa.pu.robotics.libs.BaseUnit;
 import ch.nksa.pu.robotics.libs.BaseUnit.Orientation;
-import ch.nksa.pu.g2007e.pingbot.SensorMount;
 import lejos.nxt.*;
 import lejos.nxt.comm.*;
 

@@ -1,4 +1,4 @@
-package ch.nksa.pu.g2007e.pingbot.server;
+package com.example.nxjchat.server;
 
 import ch.nksa.pu.robotics.libs.Request;
 import ch.nksa.pu.robotics.libs.RequestMode;

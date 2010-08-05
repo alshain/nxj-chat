@@ -1,4 +1,4 @@
-package ch.nksa.pu.g2007e.pingbot.server;
+package com.example.nxjchat.server;
 
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package ch.nksa.pu.g2007e.pingbot;
+package com.example.nxjchat.client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -1,4 +1,4 @@
-package ch.nksa.pu.g2007e.pingbot.enums;
+package com.example.nxjchat.client.enums;
 
 import ch.nksa.pu.robotics.libs.EnumReplacement;
 

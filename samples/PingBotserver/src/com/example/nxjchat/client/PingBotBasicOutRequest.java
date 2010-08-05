@@ -1,4 +1,4 @@
-package ch.nksa.pu.g2007e.pingbot;
+package com.example.nxjchat.client;
 
 import ch.nksa.pu.robotics.libs.BaseUnit;
 import ch.nksa.pu.robotics.libs.BasicIncomingPcRequest;

@@ -1,4 +1,5 @@
 .project
-/bin
 .classpath
 .project
+
+/bin/

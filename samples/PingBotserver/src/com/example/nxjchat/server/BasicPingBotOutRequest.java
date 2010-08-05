@@ -1,6 +1,7 @@
-package ch.nksa.pu.g2007e.pingbot.server;
+package com.example.nxjchat.server;
 
-import ch.nksa.pu.g2007e.pingbot.enums.PingBotStatus;
+import com.example.nxjchat.client.enums.PingBotStatus;
+
 import ch.nksa.pu.robotics.libs.RequestStruct;
 import ch.nksa.pu.robotics.libs.Util;
 import ch.nksa.pu.robotics.libs.pc.BasicOutgoingPcRequest;
