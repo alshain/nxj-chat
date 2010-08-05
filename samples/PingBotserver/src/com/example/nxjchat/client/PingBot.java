@@ -20,17 +20,16 @@ public class PingBot {
 		base.setOrientation(Orientation.BACKWARD);
 		PingBotBasicInRequest.registerRequest();
 		Thread.sleep(100000);
-		//searchTheLight();
 	}
 	
 	public static void searchTheLight() throws InterruptedException{
-		int samples = 1000;
+		int samples = 1500;
 		//consider this a guideline, not an exact setting
 		int time = 5000;
 		//this parameter controls how much jitters are being smoothed out
 		int smoothness = 4;
 		int[] values = new int[samples];
-		int epsilon = 6;
+		int epsilon = 9;
 		int high;
 		Stopwatch timeout = new Stopwatch();
 		from_start:
@@ -83,8 +82,6 @@ public class PingBot {
 		base.stopAll();
 		System.out.println(high);
 		Thread.sleep(5000);
-		
-		
 	}
 	
 	protected static int calculateMean(int[] values){

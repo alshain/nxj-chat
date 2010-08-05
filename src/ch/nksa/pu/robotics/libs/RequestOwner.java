@@ -73,16 +73,6 @@ public class RequestOwner {
 			if(outgoingRequests.size() > requestsSent){
 				OutgoingRequest req = outgoingRequests.get(requestsSent);
 				try {
-					/**
-					 * Request Protocol Format
-					 * 
-					 *id
-					 * RequestMode
-					 * ReferenceId
-					 * Sender
-   					 * Nick
-					 * Subject
-					 */
 					byte[][] header;
 					header = req.getHeader();
 					byte[][] data;

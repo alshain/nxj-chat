@@ -64,15 +64,12 @@ public class Request {
 	}
 	
 	protected void notifyReferenceWaitingMonitor(){
-		Util.log("notfiyBeforeNull");
 		if(reference != null){
-			Util.log("notfiyAfterNull");
 			reference.notifyWaitingMonitor();
 		}
 	}
 	
 	protected void notifyWaitingMonitor(){
-		Util.log("notifying");
 		synchronized (waitingMonitor) {
 			waitingMonitor.notifyAll();
 		}

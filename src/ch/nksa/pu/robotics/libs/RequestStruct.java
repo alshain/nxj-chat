@@ -42,7 +42,6 @@ public class RequestStruct {
 		String _mode = Util.bytesToString(raw_request[1]);
 		mode = RequestMode.getFromString(_mode);
 		
-		
 		if(RequestMode.FOLLOW_UP.equals(mode)){
 			reference = owner.getIncomingRequest(Util.bytesToInt(raw_request[2]));
 		}

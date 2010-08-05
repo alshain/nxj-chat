@@ -1,16 +1,10 @@
 package com.example.nxjchat.client;
 
-import ch.nksa.pu.robotics.libs.BaseUnit;
-import ch.nksa.pu.robotics.libs.BasicIncomingPcRequest;
 import ch.nksa.pu.robotics.libs.BasicOutgoingNxtRequest;
-import ch.nksa.pu.robotics.libs.Request;
-import ch.nksa.pu.robotics.libs.RequestMode;
 import ch.nksa.pu.robotics.libs.RequestStruct;
 import ch.nksa.pu.robotics.libs.Util;
 
 public class PingBotBasicOutRequest extends BasicOutgoingNxtRequest {
-
-	
 	public PingBotBasicOutRequest(RequestStruct req) {
 		super(req);
 		// TODO Auto-generated constructor stub

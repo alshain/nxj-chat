@@ -1,5 +1,6 @@
 package com.example.nxjchat.client;
 
+import ch.nksa.pu.robotics.libs.Util;
 import lejos.nxt.*;
 
 public class SensorMount {
@@ -24,6 +25,7 @@ public class SensorMount {
 	
 	private SensorMount(){
 		light.setFloodlight(false);
+		uSonic.ping();
 	}
 	
 	public int getDistance(){
@@ -32,6 +34,8 @@ public class SensorMount {
 				Thread.sleep(sonicDelay);
 			} catch (InterruptedException e) {}
 		}
+		uSonic.ping();
+		Util.sleep(400);
 		lastPing = System.currentTimeMillis();
 		return uSonic.getDistance();
 	}

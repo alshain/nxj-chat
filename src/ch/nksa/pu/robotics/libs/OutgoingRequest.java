@@ -13,7 +13,6 @@ public class OutgoingRequest extends Request{
 		if(send){
 			send();
 		}
-		// TODO Auto-generated constructor stub
 	}
 
 	protected boolean hasBeenSent = false;
@@ -47,21 +46,12 @@ public class OutgoingRequest extends Request{
 	}
 	
 	public byte[][] getHeader(){
-		//id
-		//RequestMode
-		//ReferenceId
-		//Sender
-		//Nick
-		//Subject
 		byte[][] header = new byte[6][];
 		header[0] = Util.intToBytes(id);
 		header[1] = Util.stringToBytes(mode.toString());
 		header[2] = Util.intToBytes(getReferenceId());
-		
 		header[3] = Util.stringToBytes(getSender());
-
 		header[4] = Util.stringToBytes(nick);
-		
 		header[5] = Util.stringToBytes(subject);
 		return header;
 	}
